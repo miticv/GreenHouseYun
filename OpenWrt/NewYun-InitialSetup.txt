@@ -1,0 +1,23 @@
+
+
+1) do YunSysupgrade:
+http://www.arduino.cc/en/Tutorial/YunSysupgrade
+- Get SD card (2GB)
+- Copy to root the openwrt-ar71xx-generic-yun-16M-squashfs-sysupgrade.bin
+- Connect to YUN wifi
+- open http://192.168.240.1
+- Default password is "arduino"
+- Click "RESET" button
+
+2) expand YUN disk space:
+http://www.arduino.cc/en/Tutorial/ExpandingYunDiskSpace
+- Upload the sketch "YunDiskSpaceExpander.ino" using serial connection
+- Open Serial monitor (using NewLine dropdown menu)
+- yes (proceed)
+- yes (connected to internet)
+- yes (partitioning - will loose everything from the SD card)
+- 1024 (size in MB for partition)
+- When done press YUN RST to reboot
+
+3) check system:
+df -h / /mnt/sda1

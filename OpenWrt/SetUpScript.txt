@@ -1,0 +1,107 @@
+#!/bin/sh /etc/rc.common
+# Example script
+
+ #*********** install pip *********************
+opkg update
+opkg install distribute
+opkg install python-openssl
+easy_install pip
+
+#*********** use SD card instead **************
+
+mkdir /mnt/sda1/python-packages
+#vim /etc/profile
+#Press i  to enter insert mode, below export lines add:
+#export PYTHONPATH=/mnt/sda1/python-packages
+#Press esc  to go back to command mode. Type :wq  to save the file and quit vim.
+#Reload environment by typing:
+source /etc/profile
+
+pip install --target /mnt/sda1/python-packages twilio
+
+#************************************* filezilla
+opkg install vsftpd openssh-sftp-server
+
+#*************************************  MySQL
+
+ opkg install libpthread libncurses libreadline mysql-server
+ sed -i 's,^datadir.*,datadir         = "/srv/mysql",g' /etc/my.cnf
+ sed -i 's,^tmpdir.*,tmpdir          = "/tmp",g' /etc/my.cnf
+
+ mkdir -p /srv/mysql
+ mysql_install_db –force
+#***************************************************************************************
+#Installing MySQL system tables...
+#OK
+#Filling help tables...
+#OK
+#To start mysqld at boot time you have to copy
+#support-files/mysql.server to the right place for your system
+#PLEASE REMEMBER TO SET A PASSWORD FOR THE MySQL root USER !
+#To do so, start the server, then issue the following commands:
+#/usr/bin/mysqladmin -u root password 'new-password'
+#/usr/bin/mysqladmin -u root -h GreenHouseYun password 'new-password'
+#Alternatively you can run:
+#/usr/bin/mysql_secure_installation
+#which will also give you the option of removing the test
+#databases and anonymous user created by default.  This is
+#strongly recommended for production servers.
+#See the manual for more instructions.
+#You can start the MySQL daemon with:
+#cd /usr ; /usr/bin/mysqld_safe &
+#You can test the MySQL daemon with mysql-test-run.pl
+#cd /usr/mysql-test ; perl mysql-test-run.pl
+#Please report any problems with the /usr/scripts/mysqlbug script!
+#***************************************************************************************
+
+/etc/init.d/mysqld start
+/etc/init.d/mysqld enable
+mysqladmin -u root password 'arduino4007'
+
+mysqladmin -u root -p create arduino  #(create new DB)
+mysql –root -p   #(sql console)
+mysql>USE arduino
+mysql>CREATE TABLE ………
+mysql>INSERT INTO …………
+mysql>SHOW TABLES;
+mysql>DESCRIBE tablename;
+mysql>quit
+#INT, SMALLINT, BIGINT, DEC (exact value), DOUBLE (approx val)
+#BIT, 
+#TIMESTAMP (autoupdate), DATE, TIME, DATETIME, YEAR
+#CHAR(0-255), 
+#VARCHAR(),
+
+**************************************  PHP setup
+opkg install php5 php5-cgi
+vi /etc/config/uhttpd
+#list interpreter. "php=/usr/bin/php-cgi"  #(uncomment this line with vi /etc/config/uhttpd)
+
+/etc/init.d/uhttpd restart
+opkg install php5-mod-mysql
+sed -i 's,;extension=mysql.so,extension=mysql.so,g' /etc/php.ini
+
+#(for mysqli instead use: )
+#duplicate the block named [MySQL] to [MySQLi] and rename all "mysql."-options to "mysqli.". To access a local MySQL server via socket, modify the value of "mysqli.default_socket" (which can be found in /etc/my.cnf):
+#opkg install php5-mod-mysqli
+#sed -i 's,;extension=mysqli.so,extension=mysqli.so,g' /etc/php.ini
+
+opkg install python-mysql
+#EDIT php.ini [MySQL] section to looks like this:
+#[MySQL]
+#mysql.allow_local_infile = On
+#mysql.allow_persistent = On
+#mysql.cache_size = 2000
+#mysql.max_persistent = -1
+#mysql.max_links = -1
+#mysql.default_port = 3306
+#mysql.default_socket = /tmp/run/mysqld.sock
+#mysql.default_host = 127.0.0.1
+#mysql.default_user = root
+#mysql.default_password = arduino4007
+#mysql.connect_timeout = 60
+#mysql.trace_mode = Off
+
+
+
+
