@@ -1,20 +1,17 @@
-// Example testing sketch for various DHT humidity/temperature sensors
-// Written by ladyada, public domain
 
-#include "DHT.h"
+
+
 #include <Bridge.h>
 #include <YunServer.h>
 #include <YunClient.h> 
 
-#include <OneWire.h>
-#include <DallasTemperature.h>
+YunServer server;
+YunClient client;
 
-#define DHTPIN 2     // what pin we're connected to
-#define busPin 10
-OneWire bus(busPin);
-DallasTemperature sensors(&bus);
-DeviceAddress sensor1;
-DeviceAddress sensor2;
+/* ##################### temperature humidity ##################### */
+#include "DHT.h"
+#define DHTPIN 2        // what pin we're connected to DIGITAL
+
 
 // Uncomment whatever type you're using!
 //#define DHTTYPE DHT11   // DHT 11 
@@ -39,88 +36,167 @@ DHT dht(DHTPIN, DHTTYPE);
 // Example to initialize DHT sensor for Arduino Due:
 //DHT dht(DHTPIN, DHTTYPE, 30);
 
+/* ##################### resetFunc ################################ */
+void(*resetFunc) (void) = 0;  //declare reset function @ address 0
 
+
+/* ##################### temperature libraries ##################### */
+#include <OneWire.h>
+#include <DallasTemperature.h>
+
+#define ONEWIREPIN 10  // what pin we're connected to DIGITAL
+OneWire bus(ONEWIREPIN);
+DallasTemperature sensors(&bus);
+const int TemperatureDevices = 5;
+DeviceAddress tempSensors[TemperatureDevices];
+
+
+/* ##################### VARS ##################################### */
 // All request will be transfered here
-YunServer server;
-String startString;
+float TempVar[4];
+int i;
+char errorString[50];
+//char sensorFloatValue[10];
+char sensorValue[5];
  
 void setup() {
-// Bridge startup
+// Bridge startup: 
   pinMode(13,OUTPUT);
   digitalWrite(13, LOW);
+
   Bridge.begin();
-  digitalWrite(13, HIGH);
-  
+
   dht.begin();
+  
+  sensors.begin();
+  SensorsSetUp();
   
   server.listenOnLocalhost();
   server.begin();
   
-  
-    if (!sensors.getAddress(sensor1, 0)) 
-  {
-    //Serial.println("DS18B20 NUMBER 1 NOT FOUND!");
-  }
-  if (!sensors.getAddress(sensor2, 1)) 
-  {
-    //Serial.println("DS18B20 NUMBER 2 NOT FOUND!");
-  }
+  //light up LED 13 as a signal that bridge is ready
+  digitalWrite(13, HIGH);
+ 
 }
 
 void loop() {
   
   // Get clients coming from server
-  YunClient client = server.accept();
+  client = server.accept();
   // There is a new client?
   if (client) {
     // read the command
     String command = client.readString();
     command.trim();        //kill whitespace
-    // is "temperature" command?
+
     if (command == "temp") {
-      sensors.requestTemperatures();
-  float tempC1 = sensors.getTempC(sensor1);
-  float tempC2 = sensors.getTempC(sensor2);
-  
-      // Reading temperature or humidity takes about 250 milliseconds!
-      // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
-      float h = dht.readHumidity();
-      // Read temperature as Celsius
-      float t = dht.readTemperature();
-      // Read temperature as Fahrenheit
-      float f = dht.readTemperature(true);
-           // Check if any reads failed and exit early (to try again).
-      if (isnan(h) || isnan(t) || isnan(f)) {
-        //Serial.println("Failed to read from DHT sensor!");
-        client.print("{error:\"Failed to read from DHT sensor!\"}");
-        return;
-      }
-      // Compute heat index
-      // Must send in temp in Fahrenheit!
-      float hi = dht.computeHeatIndex(f, h);
-  
-      client.print("{Humidity%:");
-      client.print(h);
-      client.print(" , TempC:");
-      client.print(t);
-      client.print(" , TempF:");
-      client.print(f);
-      client.print(" , HeatIndexF:");
-      client.print(hi);      
-	  
-	  client.print(" , Temp1C:");
-	  client.print(tempC1);
-	  client.print(" , Temp2C:");
-	  client.print(tempC2);
-	  
-      client.print("}");
-      
+		ReadDHT();             
     }
+	else if (command == "temps") {
+		ReadTemps();
+
+	}
+	else if (command == "err") {
+		ShowLastError();
+	}
+	else if (command == "reset") {
+		ResetArduino();
+	}
+	else{
+		ShowCommands();
+	}
+
     // Close connection and free resources.
     client.stop();
     
   }
-      
+  digitalWrite(13, HIGH);
   delay(50); // Poll every 50ms
        
 }
+
+
+void ShowCommands(){
+	client.print("{temp:\"List temperature and humidity\",");
+	client.print("temps:\"List temperatures\",");
+	client.print("err:\"show last error\",");
+	client.print("reset:\"Reset Arduino\"");
+	client.print("}");
+}
+
+void ReadDHT(){
+	digitalWrite(13, LOW);
+	// Reading temperature or humidity takes about 250 milliseconds!
+	// Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
+	TempVar[0] = dht.readHumidity();
+	// Read temperature as Celsius
+	TempVar[1] = dht.readTemperature();
+	// Read temperature as Fahrenheit
+	TempVar[2] = dht.readTemperature(true);
+	// Check if any reads failed and exit early (to try again).
+	if (isnan(TempVar[0]) || isnan(TempVar[1]) || isnan(TempVar[2])) {
+		//Serial.println("Failed to read from DHT sensor!");
+		client.print("{error:\"Failed to read from DHT sensor!\"}");
+	}
+	else{
+		// Compute heat index
+		// Must send in temp in Fahrenheit!
+		TempVar[3] = dht.computeHeatIndex(TempVar[2], TempVar[0]);
+
+		client.print("{ Humidity%:");
+		client.print(TempVar[0]);
+		client.print(" , TempC:");
+		client.print(TempVar[1]);
+		client.print(" , TempF:");
+		client.print(TempVar[2]);
+		client.print(" , HeatIndexF:");
+		client.print(TempVar[3]);
+
+		client.print("}");
+
+	}
+}
+
+void ReadTemps(){
+
+	sensors.requestTemperatures();
+	client.print("{");
+	for (i = 0; i < TemperatureDevices; i++)
+	{
+		client.print("TempC");
+		client.print(i + 1);
+		client.print(":");
+		client.print(sensors.getTempC(tempSensors[i]));
+		if (i != (TemperatureDevices - 1)) client.print(", ");
+	}
+	client.print("}");
+}
+
+void ShowLastError(){
+	client.print("{error: \"");
+	client.print(errorString);
+	client.print("\"}");
+
+}
+
+void ResetArduino(){
+
+	client.print("{ resettingArduino: \"Commited\"");
+	resetFunc();
+}
+
+void SensorsSetUp(){
+
+	for (i = 0; i < TemperatureDevices; i++)
+	{
+        strcpy(errorString, "DS18B20 not found: ");
+		if (!sensors.getAddress(tempSensors[i], i))
+		{
+			strcat(errorString, itoa(i, sensorValue, 10));
+			strcat(errorString, " ");
+		}
+	}
+
+  
+}
+
