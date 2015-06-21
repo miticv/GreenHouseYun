@@ -49,7 +49,7 @@ OneWire bus(ONEWIREPIN);
 DallasTemperature sensors(&bus);
 const int TemperatureDevices = 5;
 DeviceAddress tempSensors[TemperatureDevices];
-
+bool tempSensorsReadable[TemperatureDevices];
 
 /* ##################### VARS ##################################### */
 // All request will be transfered here
@@ -166,7 +166,18 @@ void ReadTemps(){
 		client.print("TempC");
 		client.print(i + 1);
 		client.print(":");
-		client.print(sensors.getTempC(tempSensors[i]));
+		if (tempSensorsReadable[i]){ 
+			TempVar[0] = sensors.getTempC(tempSensors[i]);
+			if (TempVar[0] < 100){  //sensor disconnected shows -127
+				client.print("-999");
+			}
+			else{
+				client.print(TempVar[0]);
+			}			
+		}
+		else {
+			client.print("-999");
+		}
 		if (i != (TemperatureDevices - 1)) client.print(", ");
 	}
 	client.print("}");
@@ -192,8 +203,12 @@ void SensorsSetUp(){
         strcpy(errorString, "DS18B20 not found: ");
 		if (!sensors.getAddress(tempSensors[i], i))
 		{
-			strcat(errorString, itoa(i, sensorValue, 10));
+			tempSensorsReadable[i] = false;
+			strcat(errorString, itoa(i + 1, sensorValue, 10));
 			strcat(errorString, " ");
+		}
+		else{
+			tempSensorsReadable[i] = true;
 		}
 	}
 
