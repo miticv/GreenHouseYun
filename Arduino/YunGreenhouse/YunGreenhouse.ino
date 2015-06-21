@@ -47,7 +47,8 @@ void(*resetFunc) (void) = 0;  //declare reset function @ address 0
 #define ONEWIREPIN 10  // what pin we're connected to DIGITAL
 OneWire bus(ONEWIREPIN);
 DallasTemperature sensors(&bus);
-const int TemperatureDevices = 5;
+const int TemperatureDevices = 10;
+int numberOfDevices;
 DeviceAddress tempSensors[TemperatureDevices];
 bool tempSensorsReadable[TemperatureDevices];
 
@@ -161,14 +162,26 @@ void ReadTemps(){
 
 	sensors.requestTemperatures();
 	client.print("{");
-	for (i = 0; i < TemperatureDevices; i++)
+	for (i = 0; i < numberOfDevices; i++)
 	{
-		client.print("TempC");
+		client.print("Temp");
 		client.print(i + 1);
-		client.print(":");
+		client.print(": {");
+		client.print("Address: \"");
+		client.print((int)tempSensors[i], HEX);
+		//showAddress(tempSensors[i]);
+		//for (uint8_t k = 0; k < 8; i++)
+		//{
+		//	// zero pad the address if necessary
+		//	if ((uint8_t)tempSensors[i][k] < 16) client.print("0");
+		//	client.print((uint8_t)tempSensors[i][k], HEX);
+		//}
+
+		client.print("\" ,");
+		client.print("TempC: ");		
 		if (tempSensorsReadable[i]){ 
 			TempVar[0] = sensors.getTempC(tempSensors[i]);
-			if (TempVar[0] < 100){  //sensor disconnected shows -127
+			if (TempVar[0] < -100){  //sensor disconnected shows -127
 				client.print("-999");
 			}
 			else{
@@ -178,7 +191,8 @@ void ReadTemps(){
 		else {
 			client.print("-999");
 		}
-		if (i != (TemperatureDevices - 1)) client.print(", ");
+		client.print("}");
+		if (i != (numberOfDevices - 1)) client.print(", ");
 	}
 	client.print("}");
 }
@@ -192,13 +206,15 @@ void ShowLastError(){
 
 void ResetArduino(){
 
-	client.print("{ resettingArduino: \"Commited\"");
+	client.print("{ resettingArduino: \"Commited\" }");
 	resetFunc();
 }
 
 void SensorsSetUp(){
 
-	for (i = 0; i < TemperatureDevices; i++)
+	numberOfDevices = sensors.getDeviceCount();
+
+	for (i = 0; i < numberOfDevices; i++)
 	{
         strcpy(errorString, "DS18B20 not found: ");
 		if (!sensors.getAddress(tempSensors[i], i))
@@ -215,3 +231,13 @@ void SensorsSetUp(){
   
 }
 
+// function to print a device address
+//void showAddress(uint8_t deviceAddress[])
+//{
+//		for (uint8_t k = 0; k < 8; i++)
+//		{
+//			// zero pad the address if necessary
+//			if (deviceAddress[k] < 16) client.print("0");
+//			client.print(deviceAddress[k], HEX);
+//		}
+//}
