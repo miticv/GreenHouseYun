@@ -114,6 +114,10 @@ void loop() {
 		ReadDate();
 
 	}
+	else if (command == "alivesince") {
+		SecondsSinceLastReboot();
+
+	}
 	else{
 		ShowCommands();
 	}
@@ -133,20 +137,28 @@ void ShowCommands(){
 	client.print("temps:\"List temperatures\",");
 	client.print("light:\"Measure light\",");
 	client.print("date:\"Show current device date time\",");
+	client.print("alivesince:\"Seconds since last Linux reboot\",");
 	client.print("err:\"Show last error\",");
 	client.print("reset:\"Reset Arduino\"");
 	client.print("}");
 }
 
+void SecondsSinceLastReboot(){
+
+	printShellCommand("(</proc/uptime awk '{print $1}')");
+}
+
 void ReadDate() {
 
-	p.runShellCommand("date +\"%Y-%m-%d %H:%M:%S\"");
-	while (p.running());
+	printShellCommand("date +\"%Y-%m-%d %H:%M:%S\"");
 
-	while (p.available()>0) {
-		client.print((char)p.read());
-	}
-	client.flush();
+	//p.runShellCommand("date +\"%Y-%m-%d %H:%M:%S\"");
+	//while (p.running());
+
+	//while (p.available()>0) {
+	//	client.print((char)p.read());
+	//}
+	//client.flush();
 
 }
 
@@ -262,6 +274,17 @@ void SensorsSetUp(){
 	}
 
   
+}
+
+void printShellCommand(char* str){
+	p.runShellCommand(str);
+	while (p.running());
+
+	while (p.available()>0) {
+		client.print((char)p.read());
+	}
+	client.flush();
+
 }
 
 // function to print a device address
