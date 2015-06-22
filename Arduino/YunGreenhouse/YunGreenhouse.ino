@@ -4,13 +4,14 @@
 #include <Bridge.h>
 #include <YunServer.h>
 #include <YunClient.h> 
+#include <Process.h>
 
 YunServer server;
 YunClient client;
 
 /* ##################### temperature humidity ##################### */
 #include "DHT.h"
-#define DHTPIN 2        // what pin we're connected to DIGITAL
+#define DHTPIN 10        // what pin we're connected to DIGITAL
 
 
 // Uncomment whatever type you're using!
@@ -44,7 +45,7 @@ void(*resetFunc) (void) = 0;  //declare reset function @ address 0
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
-#define ONEWIREPIN 10  // what pin we're connected to DIGITAL
+#define ONEWIREPIN 2  // what pin we're connected to DIGITAL
 OneWire bus(ONEWIREPIN);
 DallasTemperature sensors(&bus);
 const int TemperatureDevices = 10;
@@ -59,6 +60,8 @@ int i;
 char errorString[50];
 //char sensorFloatValue[10];
 char sensorValue[5];
+Process p;
+
  
 void setup() {
 // Bridge startup: 
@@ -97,11 +100,19 @@ void loop() {
 		ReadTemps();
 
 	}
+	else if (command == "light") {
+		ReadLight();
+
+	}
 	else if (command == "err") {
 		ShowLastError();
 	}
 	else if (command == "reset") {
 		ResetArduino();
+	}
+	else if (command == "date") {
+		ReadDate();
+
 	}
 	else{
 		ShowCommands();
@@ -120,9 +131,31 @@ void loop() {
 void ShowCommands(){
 	client.print("{temp:\"List temperature and humidity\",");
 	client.print("temps:\"List temperatures\",");
-	client.print("err:\"show last error\",");
+	client.print("light:\"Measure light\",");
+	client.print("date:\"Show current device date time\",");
+	client.print("err:\"Show last error\",");
 	client.print("reset:\"Reset Arduino\"");
 	client.print("}");
+}
+
+void ReadDate() {
+
+	p.runShellCommand("date +\"%Y-%m-%d %H:%M:%S\"");
+	while (p.running());
+
+	while (p.available()>0) {
+		client.print((char)p.read());
+	}
+	client.flush();
+
+}
+
+void ReadLight(){
+
+	// Measure light level
+	client.print("{ light:");
+	client.print(analogRead(A0));
+	client.print(" }");
 }
 
 void ReadDHT(){
