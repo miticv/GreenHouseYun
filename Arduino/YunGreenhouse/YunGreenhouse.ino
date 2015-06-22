@@ -4,7 +4,7 @@
 #include <Bridge.h>
 #include <YunServer.h>
 #include <YunClient.h> 
-#include <Process.h>
+#include <Process.h>  /* for making OpenWrt linux process requests */
 
 YunServer server;
 YunClient client;
@@ -58,6 +58,7 @@ bool tempSensorsReadable[TemperatureDevices];
 float TempVar[4];
 int i;
 char errorString[50];
+char temp;
 //char sensorFloatValue[10];
 char sensorValue[5];
 Process p;
@@ -98,11 +99,9 @@ void loop() {
     }
 	else if (command == "temps") {
 		ReadTemps();
-
 	}
 	else if (command == "light") {
 		ReadLight();
-
 	}
 	else if (command == "err") {
 		ShowLastError();
@@ -112,11 +111,9 @@ void loop() {
 	}
 	else if (command == "date") {
 		ReadDate();
-
 	}
 	else if (command == "alivesince") {
 		SecondsSinceLastReboot();
-
 	}
 	else{
 		ShowCommands();
@@ -133,45 +130,42 @@ void loop() {
 
 
 void ShowCommands(){
-	client.print("{temp:\"List temperature and humidity\",");
-	client.print("temps:\"List temperatures\",");
-	client.print("light:\"Measure light\",");
-	client.print("date:\"Show current device date time\",");
-	client.print("alivesince:\"Seconds since last Linux reboot\",");
-	client.print("err:\"Show last error\",");
-	client.print("reset:\"Reset Arduino\"");
+
+	clientSendJSON();
+	client.print("{\"temp\":\"List temperature and humidity\",");
+	client.print("\"temps\":\"List temperatures\",");
+	client.print("\"light\":\"Measure light\",");
+	client.print("\"date\":\"Show current device date time\",");
+	client.print("\"alivesince\":\"Seconds since last Linux reboot\",");
+	client.print("\"err\":\"Show last error\",");
+	client.print("\"reset\":\"Reset Arduino\"");
 	client.print("}");
 }
 
 void SecondsSinceLastReboot(){
-
+	clientSendJSON();
+	client.print("{ \"SecondsSinceLastReboot\":\"");
 	printShellCommand("(</proc/uptime awk '{print $1}')");
+	client.print("\" }");
 }
 
 void ReadDate() {
-
+	clientSendJSON();
+	client.print("{ \"DateTime\":\"");
 	printShellCommand("date +\"%Y-%m-%d %H:%M:%S\"");
-
-	//p.runShellCommand("date +\"%Y-%m-%d %H:%M:%S\"");
-	//while (p.running());
-
-	//while (p.available()>0) {
-	//	client.print((char)p.read());
-	//}
-	//client.flush();
-
+	client.print("\" }");
 }
 
 void ReadLight(){
-
+	clientSendJSON();
 	// Measure light level
-	client.print("{ light:");
+	client.print("{ \"light\":");
 	client.print(analogRead(A0));
 	client.print(" }");
 }
 
 void ReadDHT(){
-	digitalWrite(13, LOW);
+	clientSendJSON();
 	// Reading temperature or humidity takes about 250 milliseconds!
 	// Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
 	TempVar[0] = dht.readHumidity();
@@ -181,49 +175,39 @@ void ReadDHT(){
 	TempVar[2] = dht.readTemperature(true);
 	// Check if any reads failed and exit early (to try again).
 	if (isnan(TempVar[0]) || isnan(TempVar[1]) || isnan(TempVar[2])) {
-		//Serial.println("Failed to read from DHT sensor!");
-		client.print("{error:\"Failed to read from DHT sensor!\"}");
+		client.print("{\"error\":\"Failed to read from DHT sensor!\"}");
 	}
 	else{
 		// Compute heat index
 		// Must send in temp in Fahrenheit!
 		TempVar[3] = dht.computeHeatIndex(TempVar[2], TempVar[0]);
 
-		client.print("{ Humidity%:");
+		client.print("{ \"HumidityPercent\":");
 		client.print(TempVar[0]);
-		client.print(" , TempC:");
+		client.print(", \"TempC\":");
 		client.print(TempVar[1]);
-		client.print(" , TempF:");
+		client.print(", \"TempF\":");
 		client.print(TempVar[2]);
-		client.print(" , HeatIndexF:");
+		client.print(" , \"HeatIndexF\":");
 		client.print(TempVar[3]);
-
 		client.print("}");
 
 	}
 }
 
 void ReadTemps(){
-
+	clientSendJSON();
 	sensors.requestTemperatures();
 	client.print("{");
 	for (i = 0; i < numberOfDevices; i++)
 	{
-		client.print("Temp");
+		client.print("\"Temp");
 		client.print(i + 1);
-		client.print(": {");
-		client.print("Address: \"");
+		client.print("\": {");
+		client.print("\"Address\": \"");
 		client.print((int)tempSensors[i], HEX);
-		//showAddress(tempSensors[i]);
-		//for (uint8_t k = 0; k < 8; i++)
-		//{
-		//	// zero pad the address if necessary
-		//	if ((uint8_t)tempSensors[i][k] < 16) client.print("0");
-		//	client.print((uint8_t)tempSensors[i][k], HEX);
-		//}
-
 		client.print("\" ,");
-		client.print("TempC: ");		
+		client.print("\"TempC\": ");		
 		if (tempSensorsReadable[i]){ 
 			TempVar[0] = sensors.getTempC(tempSensors[i]);
 			if (TempVar[0] < -100){  //sensor disconnected shows -127
@@ -243,15 +227,16 @@ void ReadTemps(){
 }
 
 void ShowLastError(){
-	client.print("{error: \"");
+	clientSendJSON();
+	client.print("{ \"error\" : \"");
 	client.print(errorString);
 	client.print("\"}");
 
 }
 
 void ResetArduino(){
-
-	client.print("{ resettingArduino: \"Commited\" }");
+	clientSendJSON();
+	client.print("{ \"resettingArduino\" : \"Commited\" }");
 	resetFunc();
 }
 
@@ -281,19 +266,15 @@ void printShellCommand(char* str){
 	while (p.running());
 
 	while (p.available()>0) {
-		client.print((char)p.read());
+		temp = (char)p.read();
+		if(temp != '\n') client.print(temp);
 	}
 	client.flush();
 
 }
 
-// function to print a device address
-//void showAddress(uint8_t deviceAddress[])
-//{
-//		for (uint8_t k = 0; k < 8; i++)
-//		{
-//			// zero pad the address if necessary
-//			if (deviceAddress[k] < 16) client.print("0");
-//			client.print(deviceAddress[k], HEX);
-//		}
-//}
+void clientSendJSON(){
+	client.println("Status: 200");
+	client.println("Content-type: application/json");
+	client.println();
+}
