@@ -1,0 +1,1 @@
+Files are located in: /mnt/sda1/arduino
