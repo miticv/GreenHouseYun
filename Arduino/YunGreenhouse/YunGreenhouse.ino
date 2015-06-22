@@ -58,6 +58,7 @@ bool tempSensorsReadable[TemperatureDevices];
 float TempVar[4];
 int i;
 char errorString[50];
+char tempString[200];
 char temp;
 //char sensorFloatValue[10];
 char sensorValue[5];
@@ -115,6 +116,17 @@ void loop() {
 	else if (command == "alivesince") {
 		SecondsSinceLastReboot();
 	}
+	else if (command.indexOf("/takepic/") > 0) {
+		//strcpy(tempString, "pic_");
+		//strcat(tempString, command[command.indexOf("/takepic/") + 9]);
+		TakePicture("test123.jpg");
+	}
+	else if (command == "sendssm") {
+		SendTextMessage("Flood warning test", false);
+	}
+	else if (command == "sendmsm") {
+		SendTextMessage("Flood warning test!", true);
+	}
 	else{
 		ShowCommands();
 	}
@@ -137,6 +149,9 @@ void ShowCommands(){
 	client.print("\"light\":\"Measure light\",");
 	client.print("\"date\":\"Show current device date time\",");
 	client.print("\"alivesince\":\"Seconds since last Linux reboot\",");
+	client.print("\"takepic\":\"Take a pic\",");
+	client.print("\"sendssm\":\"Send message to phone\",");
+	client.print("\"sendmsm\":\"Send message to phone with picture\",");			
 	client.print("\"err\":\"Show last error\",");
 	client.print("\"reset\":\"Reset Arduino\"");
 	client.print("}");
@@ -271,6 +286,46 @@ void printShellCommand(char* str){
 	}
 	client.flush();
 
+}
+
+void SendTextMessage(char* textMessage, bool withPicture){
+	
+	if (withPicture){
+		TakePicture("temp.jpg");
+	}
+	
+	strcpy(tempString, "\""); 
+	strcat(tempString, textMessage);
+	strcat(tempString, "\"");
+
+	p.begin("python"); // Process that launch the "python" command
+	p.addParameter("/mnt/sda1/arduino/send-sms.py"); // Add the path parameter
+	p.addParameter(tempString); // The message body
+	if (withPicture){
+		p.addParameter("http://miticv.duckdns.org:82/sd/images/temp.jpg"); // The message body
+	}
+	p.run(); // Run the process and wait for its termination
+	
+	while (p.available()>0) {
+		client.print(p.read());
+	}	
+}
+
+void TakePicture(char* picName) {
+	//fswebcam /mnt/sda1/picName.jpg -r 640x480
+	//fswebcam /mnt/sda1/arduino/www/picName.jpg -r 640x480		
+	strcpy(tempString, "");	
+	strcat(tempString, "/mnt/sda1/arduino/www/images/"); // http://miticv.duckdns.org:82/sd/images/picName.jpg		
+	strcat(tempString, picName);
+	strcat(tempString, ".jpg");
+
+	p.begin("fswebcam");
+	p.addParameter(tempString);
+	p.addParameter("-r 640x480");
+	p.run();
+	while (p.available()>0) {
+		client.print(p.read());
+	}	
 }
 
 void clientSendJSON(){
