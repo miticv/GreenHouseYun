@@ -1,3 +1,6 @@
+#!/usr/bin/python
+#chmod +x send-mms.py
+
 import sys
 from twilio.rest import TwilioRestClient
 
@@ -7,7 +10,5 @@ twilio_phone_number = "+1 226-774-0374"
 cellphone = "+1 519-796-7098"
 
 client = TwilioRestClient(account_sid, auth_token)
-#client.messages.create(to=cellphone, from_=twilio_phone_number, body=sys.argv[1])
-#mms.py has this line instead
 client.messages.create(to=cellphone, from_=twilio_phone_number, body=sys.argv[1], media_url=sys.argv[2])
 
