@@ -1,4 +1,4 @@
-#!/bin/sh /etc/rc.common
+﻿#!/bin/sh /etc/rc.common
 # Example script
 
  #*********** install pip *********************
@@ -73,13 +73,22 @@ mysql>quit
 #VARCHAR(),
 
 **************************************  PHP setup
+opkg update
+
 opkg install php5 php5-cgi
 vi /etc/config/uhttpd
 #list interpreter. "php=/usr/bin/php-cgi"  #(uncomment this line with vi /etc/config/uhttpd)
+#this line should do it as well (did not test it):
+#sed -i 's,#list interpreter. "php=/usr/bin/php-cgi",list interpreter. "php=/usr/bin/php-cgi",g' /etc/php.ini
+
 
 /etc/init.d/uhttpd restart
 opkg install php5-mod-mysql
+#below replaces line ";extension=mysql.so" with "extension=mysql.so", which means uncommenting that line :)
 sed -i 's,;extension=mysql.so,extension=mysql.so,g' /etc/php.ini
+
+opkg install php5-mod-json
+sed -i 's,;extension=json.so,extension=json.so,g' /etc/php.ini
 
 #(for mysqli instead use: )
 #duplicate the block named [MySQL] to [MySQLi] and rename all "mysql."-options to "mysqli.". To access a local MySQL server via socket, modify the value of "mysqli.default_socket" (which can be found in /etc/my.cnf):

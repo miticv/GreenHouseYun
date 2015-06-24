@@ -1,5 +1,6 @@
 <?php
-#header('Content-Type: application/json');    
+header('Content-Type: application/json');    
+http_response_code(200);
 
 exec("uptime", $system); // get the uptime stats 
 # no hours example:
@@ -10,7 +11,11 @@ $uptime = explode(" up ", $string); // break up the stats into an array
 $uptimeDetails = explode("load average: ", $uptime[1]); // grab the days from the array 
 $uptimeDetails[0] = trim($uptimeDetails[0]);
 $uptimeDetails[0] = trim($uptimeDetails[0], ",");
+$loadAverage = explode(",", $uptimeDetails[1]);
 
-#$load_average = $uptimeDetails[1];
-http_response_code(200);
-exit(json_encode($uptimeDetails[0]));
+
+#$arr = array('uptime' => $uptimeDetails[0], 'loadAverage' => $uptimeDetails[1]);
+$arr = array('uptime' => $uptimeDetails[0], 'loadAverage' => array('1min' => trim($loadAverage[0]), '5min' => trim($loadAverage[1]), '15min' => trim($loadAverage[2])));
+exit(json_encode($arr));
+
+?>
