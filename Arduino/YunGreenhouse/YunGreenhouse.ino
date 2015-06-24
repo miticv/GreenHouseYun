@@ -59,7 +59,6 @@ float TempVar[4];
 int i;
 char errorString[50];
 char tempString[100];
-char tempString2[100];
 char temp;
 //char sensorFloatValue[10];
 char sensorValue[5];
@@ -78,7 +77,7 @@ void setup() {
   sensors.begin();
   SensorsSetUp();
   
-  server.listenOnLocalhost();
+  server.noListenOnLocalhost(); //  server.listenOnLocalhost(); ??
   server.begin();
   
   //light up LED 13 as a signal that bridge is ready
@@ -95,7 +94,7 @@ void loop() {
     // read the command
     String command = client.readString();
     command.trim();        //kill whitespace
-
+	clientSendJSON();
     if (command == "temp") {
 		ReadDHT();             
     }
@@ -114,19 +113,20 @@ void loop() {
 	else if (command == "date") {
 		ReadDate();
 	}
+	else if (command == "data") {
+		ReadData();
+	}
 	else if (command == "alivesince") {
 		SecondsSinceLastReboot();
-	}
-	else if (command.indexOf("/takepic/") > 0) {
-		//strcpy(tempString, "pic_");
-		//strcat(tempString, command[command.indexOf("/takepic/") + 9]);
-		TakePicture("test123.jpg");
 	}
 	else if (command == "sendssm") {
 		SendTextMessage("Flood warning test", false);
 	}
 	else if (command == "sendmsm") {
 		SendTextMessage("Flood warning test!", true);
+	}
+	else if (command == "makephonecall") {
+		MakePhoneCall("Some random message");
 	}
 	else{
 		ShowCommands();
@@ -144,13 +144,14 @@ void loop() {
 
 void ShowCommands(){
 
-	clientSendJSON();
+	
 	client.print("{\"temp\":\"List temperature and humidity\",");
 	client.print("\"temps\":\"List temperatures\",");
 	client.print("\"light\":\"Measure light\",");
 	client.print("\"date\":\"Show current device date time\",");
+	client.print("\"data\":\"Show sensor data\",");
 	client.print("\"alivesince\":\"Seconds since last Linux reboot\",");
-	client.print("\"takepic\":\"Take a pic\",");
+	client.print("\"makephonecall\":\"make a phone call\",");
 	client.print("\"sendssm\":\"Send message to phone\",");
 	client.print("\"sendmsm\":\"Send message to phone with picture\",");			
 	client.print("\"err\":\"Show last error\",");
@@ -158,22 +159,37 @@ void ShowCommands(){
 	client.print("}");
 }
 
+
+void ReadData(){
+	client.print("{ \"light\": ");
+	ReadLight();
+	client.print(", \"Reboot\": ");
+	SecondsSinceLastReboot();
+	client.print(", \"DHT\": ");
+	ReadDHT();
+	client.print(", \"Temperatures\": ");	
+	ReadTemps();
+	client.print(", \"DeviceTime\": ");
+	ReadDate();
+	client.print("}");
+}
+
 void SecondsSinceLastReboot(){
-	clientSendJSON();
+
 	client.print("{ \"SecondsSinceLastReboot\":\"");
 	printShellCommand("(</proc/uptime awk '{print $1}')");
 	client.print("\" }");
 }
 
 void ReadDate() {
-	clientSendJSON();
+
 	client.print("{ \"DateTime\":\"");
 	printShellCommand("date +\"%Y-%m-%d %H:%M:%S\"");
 	client.print("\" }");
 }
 
 void ReadLight(){
-	clientSendJSON();
+
 	// Measure light level
 	client.print("{ \"light\":");
 	client.print(analogRead(A0));
@@ -181,7 +197,7 @@ void ReadLight(){
 }
 
 void ReadDHT(){
-	clientSendJSON();
+
 	// Reading temperature or humidity takes about 250 milliseconds!
 	// Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
 	TempVar[0] = dht.readHumidity();
@@ -212,7 +228,7 @@ void ReadDHT(){
 }
 
 void ReadTemps(){
-	clientSendJSON();
+
 	sensors.requestTemperatures();
 	client.print("{");
 	for (i = 0; i < numberOfDevices; i++)
@@ -243,7 +259,7 @@ void ReadTemps(){
 }
 
 void ShowLastError(){
-	clientSendJSON();
+
 	client.print("{ \"error\" : \"");
 	client.print(errorString);
 	client.print("\"}");
@@ -251,10 +267,60 @@ void ShowLastError(){
 }
 
 void ResetArduino(){
-	clientSendJSON();
+
 	client.print("{ \"resettingArduino\" : \"Commited\" }");
 	resetFunc();
 }
+
+void MakePhoneCall(char* test) {
+
+	client.print("{ \"sid\": \"");
+	printShellCommand("python /mnt/sda1/arduino/call-number.py");
+	client.print("\" }");
+}
+
+void SendTextMessage(char* textMessage, bool withPicture){
+
+	strcpy(tempString, "\""); 
+	strcat(tempString, textMessage);
+	strcat(tempString, "\"");
+
+	p.begin("python"); // Process that launch the "python" command
+	if (withPicture){
+		p.addParameter("/mnt/sda1/arduino/send-mms-webpic.py"); // Add the path parameter
+		p.addParameter(tempString); // The message body		
+	}
+	else{
+		p.addParameter("/mnt/sda1/arduino/send-sms.py"); // Add the path parameter
+		p.addParameter(tempString); // The message body	
+	}
+	p.run(); // Run the process and wait for its termination
+	while (p.running());
+
+	if (withPicture){		
+		client.print("{ \"messageSent\": \"");
+		client.print(textMessage);
+		client.print("\", \"pictureSent\", \"http://miticv.duckdns.org:82/sd/images/");
+		while (p.available() > 0) {
+			client.print((char)p.read());
+		}
+		client.print("\"}");
+	}
+	else{
+		while (p.available()>0) {		
+		}
+		client.print("{ \"messageSent\": \"");
+		client.print(textMessage);
+		client.print("\" }");				
+	}	
+}
+
+void clientSendJSON(){
+	client.println("Status: 200");
+	client.println("Content-type: application/json");
+	client.println();
+}
+
 
 void SensorsSetUp(){
 
@@ -262,7 +328,7 @@ void SensorsSetUp(){
 
 	for (i = 0; i < numberOfDevices; i++)
 	{
-        strcpy(errorString, "DS18B20 not found: ");
+		strcpy(errorString, "DS18B20 not found: ");
 		if (!sensors.getAddress(tempSensors[i], i))
 		{
 			tempSensorsReadable[i] = false;
@@ -274,7 +340,7 @@ void SensorsSetUp(){
 		}
 	}
 
-  
+
 }
 
 void printShellCommand(char* str){
@@ -283,82 +349,19 @@ void printShellCommand(char* str){
 
 	while (p.available()>0) {
 		temp = (char)p.read();
-		if(temp != '\n') client.print(temp);
+		if (temp != '\n') client.print(temp);
 	}
-	client.flush();
 
 }
 
-char* getTimeStamp(){
-	strcpy(tempString, "\"");
-	p.runShellCommand("date \"+%m%d%y%H%M%S\"");
-	while (p.running());
-
-	while (p.available()>0) {
-		temp = (char)p.read();
-		if (temp != '\n') strcat(tempString, &temp);
-	}
-	return tempString;
-}
-
-void SendTextMessage(char* textMessage, bool withPicture){
-	
-	if (withPicture){
-		strcat(tempString2, getTimeStamp());
-		
-		strcpy(tempString, "\"/mnt/sda1/arduino/www/images/temp");
-		strcpy(tempString, tempString2);
-		strcpy(tempString, ".jpg\"");
-
-		TakePicture(tempString); // http://miticv.duckdns.org:82/sd/images/tempmdyHMS.jpg
-	}
-	
-	strcpy(tempString, "\""); 
-	strcat(tempString, textMessage);
-	strcat(tempString, "\"");
-
-	p.begin("python"); // Process that launch the "python" command
-	if (withPicture){
-		p.addParameter("/mnt/sda1/arduino/send-mms.py"); // Add the path parameter
-		p.addParameter(tempString); // The message body
-		p.addParameter("http://miticv.duckdns.org:82/sd/images/temp.jpg"); // The message body
-	}
-	else{
-		p.addParameter("/mnt/sda1/arduino/send-sms.py"); // Add the path parameter
-		p.addParameter(tempString); // The message body	
-	}
-	p.run(); // Run the process and wait for its termination
-	while (p.running());
-
-	while (p.available()>0) {
-		client.print((char)p.read());
-	}
-	if (withPicture){
-		client.print("{ \"message\": \"sent with picture\", \"picture\": \"http://miticv.duckdns.org:82/sd/images/temp.jpg\" }");
-	}
-	else{
-		client.print("{ \"message\": \"sent\" }");
-	}
-	
-}
-
-void TakePicture(char* picName) {
-	//fswebcam /mnt/sda1/picName.jpg -r 640x480
-	//fswebcam /mnt/sda1/arduino/www/picName.jpg -r 640x480		
-
-	p.begin("fswebcam");
-	p.addParameter(picName);
-	p.addParameter("-r 640x480");
-	p.run();
-	while (p.running());
-
-	while (p.available()>0) {
-		client.print((char)p.read());
-	}	
-}
-
-void clientSendJSON(){
-	client.println("Status: 200");
-	client.println("Content-type: application/json");
-	client.println();
-}
+//char* getTimeStamp(){
+//	strcpy(tempString, "\"");
+//	p.runShellCommand("date \"+%m%d%y%H%M%S\"");
+//	while (p.running());
+//
+//	while (p.available()>0) {
+//		temp = (char)p.read();
+//		if (temp != '\n') strcat(tempString, &temp);
+//	}
+//	return tempString;
+//}

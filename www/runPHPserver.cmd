@@ -1,0 +1,1 @@
+c:\vlad\apps\php\php -S localhost:8000

@@ -6,3 +6,5 @@ Arduino/YunGreenhouse/Visual Micro/Compile.vmps.xml
 Arduino/YunGreenhouse/YunGreenhouse.sdf
 Arduino/YunGreenhouse/YunGreenhouse.opensdf
 Arduino/YunGreenhouse/Visual Micro/.YunGreenhouse.vsarduino.h
+Arduino/YunGreenhouse/YunGreenhouse.vcxproj.user
+Arduino/YunGreenhouse/Visual Micro/Configuration.Debug.vmps.xml

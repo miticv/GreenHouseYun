@@ -1,5 +1,7 @@
 #!/usr/bin/python
 #chmod +x send-sms.py
+#------------------usage:------------------------
+# python send-mms.py "hello from python"
 
 import sys
 from twilio.rest import TwilioRestClient
@@ -12,3 +14,4 @@ cellphone = "+1 519-796-7098"
 client = TwilioRestClient(account_sid, auth_token)
 client.messages.create(to=cellphone, from_=twilio_phone_number, body=sys.argv[1])
 
+print "OK"
