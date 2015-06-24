@@ -1,4 +1,0 @@
-Files are located in: /mnt/sda1/arduino
-
-python send-sms.py "Here’s my puppy."
-python send-mms.py "Here’s my puppy." https://s3.amazonaws.com/baugues/kaira-puppy.jpg
