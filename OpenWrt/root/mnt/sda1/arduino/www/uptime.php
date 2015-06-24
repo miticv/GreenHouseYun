@@ -21,7 +21,7 @@ $loadAverage = explode(",", $uptimeDetails[1]);
 
 #$arr = array('uptime' => $uptimeDetails[0], 'loadAverage' => $uptimeDetails[1]);
 $arr = array('alive'        => array('secAlive' => $intsecs[0], 'aliveFor'=> secondsToTime($intsecs[0]), 'uptime' => $uptimeDetails[0]) , 
-			  'loadAverage' => array('1min' => trim($loadAverage[0]), '5min' => trim($loadAverage[1]), '15min' => trim($loadAverage[2]))
+			  'loadAverage' => array('1min' => trim($loadAverage[0]), '5min' => trim($loadAverage[1]), '15min' => trim($loadAverage[2]), 'Description' => '0 is idle, 1 is fully utilized, 1.05 means 5% of processes waited for their turn.')
 			);
 exit(json_encode($arr));
 
