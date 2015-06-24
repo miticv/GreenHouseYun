@@ -116,9 +116,6 @@ void loop() {
 	else if (command == "data") {
 		ReadData();
 	}
-	else if (command == "alivesince") {
-		SecondsSinceLastReboot();
-	}
 	else if (command == "sendssm") {
 		SendTextMessage("Flood warning test", false);
 	}
@@ -150,7 +147,6 @@ void ShowCommands(){
 	client.print("\"light\":\"Measure light\",");
 	client.print("\"date\":\"Show current device date time\",");
 	client.print("\"data\":\"Show sensor data\",");
-	client.print("\"alivesince\":\"Seconds since last Linux reboot\",");
 	client.print("\"makephonecall\":\"make a phone call\",");
 	client.print("\"sendssm\":\"Send message to phone\",");
 	client.print("\"sendmsm\":\"Send message to phone with picture\",");			
@@ -163,8 +159,6 @@ void ShowCommands(){
 void ReadData(){
 	client.print("{ \"light\": ");
 	ReadLight();
-	client.print(", \"Reboot\": ");
-	SecondsSinceLastReboot();
 	client.print(", \"DHT\": ");
 	ReadDHT();
 	client.print(", \"Temperatures\": ");	
@@ -174,12 +168,6 @@ void ReadData(){
 	client.print("}");
 }
 
-void SecondsSinceLastReboot(){
-
-	client.print("{ \"SecondsSinceLastReboot\":\"");
-	printShellCommand("(</proc/uptime awk '{print $1}')");
-	client.print("\" }");
-}
 
 void ReadDate() {
 
