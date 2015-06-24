@@ -2,6 +2,11 @@
 header('Content-Type: application/json');    
 http_response_code(200);
 
+
+
+exec("(</proc/uptime awk '{print $1}')", $secs);
+$intsecs = explode(".", $secs[0]);
+#------------------------------UPTIME-------------------------------------------
 exec("uptime", $system); // get the uptime stats 
 # no hours example:
 #" 18:14:43 up 2 days, 24 min, load average: 0.17, 0.18, 0.18"
@@ -15,7 +20,16 @@ $loadAverage = explode(",", $uptimeDetails[1]);
 
 
 #$arr = array('uptime' => $uptimeDetails[0], 'loadAverage' => $uptimeDetails[1]);
-$arr = array('uptime' => $uptimeDetails[0], 'loadAverage' => array('1min' => trim($loadAverage[0]), '5min' => trim($loadAverage[1]), '15min' => trim($loadAverage[2])));
+$arr = array('alive'        => array('secAlive' => $intsecs[0], 'aliveFor'=> secondsToTime($intsecs[0]), 'uptime' => $uptimeDetails[0]) , 
+			  'loadAverage' => array('1min' => trim($loadAverage[0]), '5min' => trim($loadAverage[1]), '15min' => trim($loadAverage[2]))
+			);
 exit(json_encode($arr));
+
+
+function secondsToTime($seconds) {
+    $dtF = new DateTime("@0");
+    $dtT = new DateTime("@$seconds");
+    return $dtF->diff($dtT)->format('%a days, %h hours, %i minutes and %s seconds');	
+}
 
 ?>

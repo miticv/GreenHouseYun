@@ -95,6 +95,9 @@ sed -i 's,;extension=json.so,extension=json.so,g' /etc/php.ini
 #opkg install php5-mod-mysqli
 #sed -i 's,;extension=mysqli.so,extension=mysqli.so,g' /etc/php.ini
 
+opkg install zoneinfo-core zoneinfo-northamerica
+sed -i 's,;date.timezone =,date.timezone = America/New_York,g' /etc/php.ini
+
 opkg install python-mysql
 #EDIT php.ini [MySQL] section to looks like this:
 #[MySQL]
