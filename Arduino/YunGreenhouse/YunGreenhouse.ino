@@ -77,7 +77,11 @@ void setup() {
   sensors.begin();
   SensorsSetUp();
   
-  server.noListenOnLocalhost(); //  server.listenOnLocalhost(); ??
+  //asks for credentials:
+  server.noListenOnLocalhost(); 
+  //does not ask for credentials:
+  //server.listenOnLocalhost(); ??
+  
   server.begin();
   
   //light up LED 13 as a signal that bridge is ready
