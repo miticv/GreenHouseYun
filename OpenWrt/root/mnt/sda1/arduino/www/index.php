@@ -196,10 +196,13 @@ function secondsToTime($seconds) {
                 <tr class="bg-primary"><td>Water</td><td></td></tr>
               </thead>
               <tbody>
-                <tr class="success"><td>Pool Level</td><td><span class="badge">5 m</span></td></tr>
-                <tr class="success"><td>Top Temperature</td><td><span class="badge">12 C&deg;</span></td></tr>
-                <tr class="success"><td>Bottom Temperature</td><td><span class="badge">12 C&deg; </span></td></tr>
-                <tr class="success"><td>Pump Running</td><td><i class="fa fa-cog fa-spin fa-lg green"></i></td></tr>
+                <!--<tr class="success"><td>Pool Level</td><td><span class="badge">5 m</span></td></tr>-->
+                <tr class="success"><td>Temperature1 {{temp1.address}}</td><td><span class="badge"><span ng-show="tempFormat == 'C'">{{temp1.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temp1.f}} F&deg;</span></span></td></tr>
+                <tr class="success"><td>Temperature2 {{temp2.address}}</td><td><span class="badge"><span ng-show="tempFormat == 'C'">{{temp2.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temp2.f}} F&deg;</span></span></td></tr>
+                <tr class="success"><td>Temperature3 {{temp3.address}}</td><td><span class="badge"><span ng-show="tempFormat == 'C'">{{temp3.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temp3.f}} F&deg;</span></span></td></tr>
+                <tr class="success"><td>Temperature4 {{temp4.address}}</td><td><span class="badge"><span ng-show="tempFormat == 'C'">{{temp4.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temp4.f}} F&deg;</span></span></td></tr>
+                <tr class="success"><td>Temperature5 {{temp5.address}}</td><td><span class="badge"><span ng-show="tempFormat == 'C'">{{temp5.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temp5.f}} F&deg;</span></span></td></tr>
+                <!--<tr class="success"><td>Pump Running</td><td><i class="fa fa-cog fa-spin fa-lg green"></i></td></tr>-->
               </tbody>
             </table>
 
@@ -211,45 +214,7 @@ function secondsToTime($seconds) {
           <canvas id="myChart" width="400" height="400"></canvas>
         </div>
 
-          <div class="row">
-            <div class="col-sm-6 table-responsive">
-              <table class="table">
-                <caption>Bed statistics</caption>
-                <thead>
-                  <tr class="bg-primary"><td>Bed</td><td> Level</td><td></td></tr>
-                </thead>
-                <tbody>
-                  <tr class="success"><td>BED A</td><td><span class="badge">1</span></td><td><span class="label-success badge">10 C&deg;</span></td></tr>
-                  <tr class="success"><td>BED B</td><td><span class="badge">1</span></td><td><span class="badge">80 &#37;</span></td></tr>
-                  <tr class="success"><td>BED C</td><td><span class="badge">1</span></td><td><span class="badge">32 </span></td></tr>
-                  <tr class="success"><td>BED D</td><td><span class="badge">1</span></td><td><span class="badge">780 lux</span></td></tr>
-                  <tr class="success"><td>BED A</td><td><span class="badge">2</span></td><td><span class="label-success badge">10 C&deg;</span></td></tr>
-                  <tr class="success"><td>BED B</td><td><span class="badge">2</span></td><td><span class="badge">80 &#37;</span></td></tr>
-                  <tr class="success"><td>BED C</td><td><span class="badge">2</span></td><td><span class="badge">32 </span></td></tr>
-                  <tr class="success"><td>BED D</td><td><span class="badge">2</span></td><td><span class="badge">780 lux</span></td></tr>
-                </tbody>
-              </table>
-            </div><!-- /.col-sm-6 -->
-            <div class="col-sm-6  table-responsive">
-              <table class="table">
-                <caption>Tower Statistics</caption>
-                <thead>
-                  <tr class="bg-primary"><td>Tower</td><td></td></tr>
-                </thead>
-                <tbody>
-                  <tr class="success"><td>Tower 1</td><td><span class="badge">5 m</span></td></tr>
-                  <tr class="success"><td>Tower 2</td><td><span class="badge">5 m</span></td></tr>
-                  <tr class="success"><td>Tower 3</td><td><span class="badge">5 m</span></td></tr>
-                  <tr class="success"><td>Tower 4</td><td><span class="badge">5 m</span></td></tr>
-                  <tr class="success"><td>Tower 5</td><td><span class="badge">5 m</span></td></tr>
-                  <tr class="success"><td>Tower 6</td><td><span class="badge">5 m</span></td></tr>
-                  <tr class="success"><td>Tower 7</td><td><span class="badge">5 m</span></td></tr>
-                  <tr class="success"><td>Tower 8</td><td><span class="badge">5 m</span></td></tr>
 
-                </tbody>
-              </table>
-
-            </div>
           </div><!--/row-->
         </div>
     </div>
@@ -369,6 +334,12 @@ function secondsToTime($seconds) {
                              $scope.humidityPercentage;
                              $scope.heatIndex = { c: 0.0, f: 0.0 };
 
+                             $scope.temp1 = { c: 0.0, f: 0.0, address: '' };
+                             $scope.temp2 = { c: 0.0, f: 0.0, address: '' };
+                             $scope.temp3 = { c: 0.0, f: 0.0, address: '' };
+                             $scope.temp4 = { c: 0.0, f: 0.0, address: '' };
+                             $scope.temp5 = { c: 0.0, f: 0.0, address: '' };
+
                              $scope.time; //stores moment format of the date on the device
                              $scope.timeLocal;
                              $scope.timeSinceText;
@@ -461,6 +432,25 @@ function secondsToTime($seconds) {
                                      $scope.heatIndex.f = heatIndex($scope.temperature.f, $scope.humidityPercentage);
                                      $scope.heatIndex.c = F2C($scope.heatIndex.f);
                                      
+                                     $scope.temp1.c = data.data.Temperatures.Temp1.TempC;
+                                     $scope.temp1.address = data.data.Temperatures.Temp1.Address;
+                                     $scope.temp1.f = C2F($scope.temp1.c);
+
+                                     $scope.temp2.c = data.data.Temperatures.Temp2.TempC;
+                                     $scope.temp2.address = data.data.Temperatures.Temp2.Address;
+                                     $scope.temp2.f = C2F($scope.temp2.c);
+
+                                     $scope.temp3.c = data.data.Temperatures.Temp3.TempC;
+                                     $scope.temp3.address = data.data.Temperatures.Temp3.Address;
+                                     $scope.temp3.f = C2F($scope.temp3.c);
+
+                                     $scope.temp4.c = data.data.Temperatures.Temp4.TempC;
+                                     $scope.temp4.address = data.data.Temperatures.Temp4.Address;
+                                     $scope.temp4.f = C2F($scope.temp4.c);
+
+                                     $scope.temp5.c = data.data.Temperatures.Temp5.TempC;
+                                     $scope.temp5.address = data.data.Temperatures.Temp5.Address;
+                                     $scope.temp5.f = C2F($scope.temp5.c);
 
                                    },
                                    function error(e) {
