@@ -1,2 +1,1 @@
-curl --data "t=check_program" http://localhost/sd/do.php
-curl --data "t=publish_settings" http://localhost/sd/do.php
+python /mnt/sda1/arduino/mysqlLogDetail.py '1 minute'

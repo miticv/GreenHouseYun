@@ -1,0 +1,1 @@
+python /mnt/sda1/arduino/mysqlLogDetail.py '1 hour'
