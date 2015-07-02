@@ -32,9 +32,12 @@ except:
 if(id > 0)
 	########## add items
 	for temps in data["Temperatures"]: 
-		try:
-			cursor.execute(sqlLog % (id,  ) )   
-		except:
+		sensorId = 0
+		for sensor in mysqlSensorsSettings.DbSensors
+			if(sensor[])
+
+		cursor.execute(sqlLog % (id,  ) )   
+		#except:
 
 
 cursor.close()
