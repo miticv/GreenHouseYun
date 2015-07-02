@@ -1,1 +1,2 @@
-python /mnt/sda1/arduino/mysqlLogDetail.py 'device booted!'
+python /mnt/sda1/arduino/mysqlLogDetail.py 'device booted!'  
+# this is not logging....
