@@ -1,9 +1,10 @@
 #!/usr/bin/python
 import sys
 import MySQLdb
+import config
 
 # Open database connection
-db = MySQLdb.connect("127.0.0.1","root","arduino4007","arduino" )
+db = MySQLdb.connect(mysql.host, mysql.user, mysql.psw, mysql.db )
 
 # prepare a cursor object using cursor() method
 cursor = db.cursor()
