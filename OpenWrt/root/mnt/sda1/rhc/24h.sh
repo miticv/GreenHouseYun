@@ -1,5 +1,5 @@
 python /mnt/sda1/arduino/mysqlLogDetail.py '24 hours - scheduled maintnance'
-reset-mcu    #reset arduino liek this
+#reset-mcu    #reset arduino liek this
 
 #this command is not booting up linux properly. Have to dissconnect and connect power to reboot!
 #/sbin/reboot or just reboot

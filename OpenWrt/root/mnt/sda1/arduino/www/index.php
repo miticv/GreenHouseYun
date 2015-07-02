@@ -125,7 +125,7 @@ function secondsToTime($seconds) {
         </div>
 
         <ul class="nav navbar-nav navbar-right">
-          <li><a ng-hide="layout.isLoggedIn" href="/#/login"><i class="fa fa-wrench"></i> admin</a></li>
+          <li><a ng-hide="layout.isLoggedIn" target="_blank" href="/#/login"><i class="fa fa-wrench"></i> admin</a></li>
         </ul>
       </div>
     </nav>

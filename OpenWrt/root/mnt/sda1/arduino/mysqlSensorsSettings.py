@@ -1,7 +1,10 @@
 #!/usr/bin/python
-import sys
+
 import MySQLdb
 import config
+
+
+DbSensors = {}
 
 # Open database connection
 db = MySQLdb.connect(config.mysql['host'], config.mysql['user'], config.mysql['psw'], config.mysql['db'] )
@@ -10,20 +13,19 @@ db = MySQLdb.connect(config.mysql['host'], config.mysql['user'], config.mysql['p
 cursor = db.cursor()
 
 # Prepare SQL query to INSERT a record into the database.
-sql = "INSERT INTO logs(`logDetail`)VALUES('%s')" % (sys.argv[1])
+sql = "SELECT sensorId, sensorAddress, sensorName, sensorType FROM sensor"
 
-try:
-   # Execute the SQL command
-   cursor.execute(sql)
-   # Commit your changes in the database
-   db.commit()
-except:
-   # Rollback in case there is any error
-   db.rollback()
+#try:
+	# Execute the SQL command
+cursor.execute(sql)
+results = cursor.fetchall()
+for row in results:
+	DbSensors.update( { 'sensor%s' % (row[0])  : { 'id': row[0], 'address' : row[1], 'name': row[2], 'type': row[3] } })
+
+#except:
 
 
 cursor.close()
-
 # disconnect from server
 db.close()
 

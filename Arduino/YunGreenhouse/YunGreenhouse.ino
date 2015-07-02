@@ -98,41 +98,54 @@ void loop() {
     // read the command
     String command = client.readString();
     command.trim();        //kill whitespace
-	clientSendJSON();
-    if (command == "temp") {
-		ReadDHT();             
-    }
-	else if (command == "temps") {
-		ReadTemps();
-	}
-	else if (command == "light") {
-		ReadLight();
-	}
-	else if (command == "err") {
-		ShowLastError();
-	}
-	else if (command == "reset") {
-		ResetArduino();
-	}
-	else if (command == "date") {
-		ReadDate();
-	}
-	else if (command == "data") {
-		ReadData();
-	}
-	else if (command == "sendssm") {
-		SendTextMessage("Flood warning test", false);
-	}
-	else if (command == "sendmsm") {
-		SendTextMessage("Flood warning test!", true);
-	}
-	else if (command == "makephonecall") {
-		MakePhoneCall("Some random message");
+	if (isCommandFromYUN(&command)){
+		/* YUN calling for data */
+		if (isYunDataArgument(&command)){
+			ReadDataConcise(true);
+		}
+		else{
+			/* YUN calling wrong argument */
+			client.print("{\"Invalid command\"}");
+		}
 	}
 	else{
-		ShowCommands();
-	}
+		/* API calling for data */
+		clientSendJSON();
 
+		if (command == "temp") {
+			ReadDHT();
+		}
+		else if (command == "temps") {
+			ReadTemps();
+		}
+		else if (command == "light") {
+			ReadLight();
+		}
+		else if (command == "err") {
+			ShowLastError();
+		}
+		else if (command == "reset") {
+			ResetArduino();
+		}
+		else if (command == "date") {
+			ReadDate();
+		}
+		else if (command == "data") {
+			ReadData();
+		}
+		else if (command == "sendssm") {
+			SendTextMessage("Flood warning test", false);
+		}
+		else if (command == "sendmsm") {
+			SendTextMessage("Flood warning test!", true);
+		}
+		else if (command == "makephonecall") {
+			MakePhoneCall("Some random message");
+		}
+		else{
+			ShowCommands(command);
+		}
+	}
     // Close connection and free resources.
     client.stop();
     
@@ -143,10 +156,12 @@ void loop() {
 }
 
 
-void ShowCommands(){
+void ShowCommands(String command){
 
-	
-	client.print("{\"temp\":\"List temperature and humidity\",");
+	client.print("{\"Invalid command\":\"");
+	client.print(command);
+	client.print("\",");
+	client.print("\"temp\":\"List temperature and humidity\",");
 	client.print("\"temps\":\"List temperatures\",");
 	client.print("\"light\":\"Measure light\",");
 	client.print("\"date\":\"Show current device date time\",");
@@ -160,13 +175,20 @@ void ShowCommands(){
 }
 
 
-void ReadData(){
+void ReadDataConcise(bool closeBrackets){
 	client.print("{ \"light\": ");
 	ReadLight();
 	client.print(", \"DHT\": ");
 	ReadDHT();
-	client.print(", \"Temperatures\": ");	
+	client.print(", \"Temperatures\": ");
 	ReadTemps();
+	if (closeBrackets){
+		client.print("}");
+	}
+}
+
+void ReadData(){
+	ReadDataConcise(false);
 	client.print(", \"DeviceTime\": ");
 	ReadDate();
 	client.print("}");
@@ -344,6 +366,14 @@ void printShellCommand(char* str){
 		if (temp != '\n') client.print(temp);
 	}
 
+}
+
+bool isCommandFromYUN(String *command){
+	return (*command).indexOf("127.0.0.1:5555") > -1;
+}
+
+bool isYunDataArgument(String *command){
+	return (*command).indexOf("GET /data HTTP/") > -1;
 }
 
 //char* getTimeStamp(){
