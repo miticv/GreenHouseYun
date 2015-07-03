@@ -50,7 +50,7 @@ OneWire bus(ONEWIREPIN);
 DallasTemperature sensors(&bus);
 const int TemperatureDevices = 10;
 int numberOfDevices;
-DeviceAddress tempSensors[TemperatureDevices];
+DeviceAddress tempSensors[TemperatureDevices];  //DeviceAddress is uint8_t[8]
 bool tempSensorsReadable[TemperatureDevices];
 
 /* ##################### VARS ##################################### */
@@ -176,7 +176,7 @@ void ShowCommands(String command){
 
 
 void ReadDataConcise(bool closeBrackets){
-	client.print("{ \"light\": ");
+	client.print("{ \"Light\": ");
 	ReadLight();
 	client.print(", \"DHT\": ");
 	ReadDHT();
@@ -205,8 +205,9 @@ void ReadDate() {
 void ReadLight(){
 
 	// Measure light level
-	client.print("{ \"light\":");
+	client.print("{ \"Light\":");
 	client.print(analogRead(A0));
+	client.print(", \"Address\": \"Analog0\"");
 	client.print(" }");
 }
 
@@ -236,6 +237,7 @@ void ReadDHT(){
 		client.print(TempVar[2]);
 		client.print(" , \"HeatIndexF\":");
 		client.print(TempVar[3]);
+		client.print(", \"Address\": \"Digital10\"");
 		client.print("}");
 
 	}
@@ -247,12 +249,8 @@ void ReadTemps(){
 	client.print("[");
 	for (i = 0; i < numberOfDevices; i++)
 	{		
-		client.print("{");
-		client.print("\"PhusicalAddress\": \"");
-		client.print((int)tempSensors[i], HEX);
-		client.print("\", \"Address\": \"");
-		client.print("T");
-		client.print(i);
+		client.print("{ \"Address\": \"");
+		printAddress(tempSensors[i]);
 		client.print("\" ,");
 		client.print("\"TempC\": ");		
 		if (tempSensorsReadable[i]){ 
@@ -377,6 +375,16 @@ bool isYunDataArgument(String *command){
 	return (*command).indexOf("GET /data HTTP/") > -1;
 }
 
+
+void printAddress(uint8_t* address){
+
+	for (int j = 0; j < 8; j++)
+	{
+		client.print(address[j], HEX);
+		if(j<7) client.print(" ");
+	}
+
+}
 //char* getTimeStamp(){
 //	strcpy(tempString, "\"");
 //	p.runShellCommand("date \"+%m%d%y%H%M%S\"");

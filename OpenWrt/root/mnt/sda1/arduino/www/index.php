@@ -43,6 +43,7 @@ function secondsToTime($seconds) {
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.0/css/toastr.min.css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.0.0/css/bootstrap-datetimepicker.min.css" />
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/angular-busy/4.1.2/angular-busy.min.css" />
+  
 
   <style type="text/css">
     textarea#fileContent {
@@ -115,6 +116,8 @@ function secondsToTime($seconds) {
   <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.0.0/js/bootstrap-datetimepicker.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/angular-busy/4.1.2/angular-busy.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/angular-moment/0.9.0/angular-moment.min.js"></script>
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
 
   <script type="text/ng-template" id="header.html">
     <nav class="navbar navbar-default text-center">
@@ -182,10 +185,18 @@ function secondsToTime($seconds) {
                 <tr class="bg-primary"><td>Air</td><td> Out</td><td>In</td></tr>
               </thead>
               <tbody>
-                <tr class="success"><td>Temperature</td><td><span class="badge"><span ng-show="tempFormat == 'C'">{{temperature.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temperature.f}} F&deg;</span></span></td><td></td></tr>
-                <tr class="success"><td>Humidity</td><td> <span class="badge"><span>{{humidityPercentage}} &#37;</span> </span></td><td><!--<span class="badge">80 &#37;</span>--></td></tr>
-                <tr class="success"><td>Heat Index</td><td> <span class="badge"><span ng-show="tempFormat == 'C'">{{heatIndex.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{heatIndex.f}} F&deg;</span> </span></td><td><!--<span class="badge">32 </span>--></td></tr>
-                <tr class="success"><td>Light</td><td> <!--<span class="badge">780 lux</span>--></td><td><!--<span class="badge">780 lux</span>--></td></tr>
+                <tr class="success">
+                  <td>Temperature <abbr data-popover-title="Device Address" data-popover="{{temperature.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
+                  <td><span class="badge"><span ng-show="tempFormat == 'C'">{{temperature.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temperature.f}} F&deg;</span></span></td><td></td></tr>
+                <tr class="success">
+                  <td>Humidity</td>
+                  <td> <span class="badge"><span>{{humidityPercentage}} &#37;</span> </span></td><td><!--<span class="badge">80 &#37;</span>--></td></tr>
+                <tr class="success">
+                  <td>Heat Index</td>
+                  <td> <span class="badge"><span ng-show="tempFormat == 'C'">{{heatIndex.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{heatIndex.f}} F&deg;</span> </span></td><td><!--<span class="badge">32 </span>--></td></tr>
+                <tr class="success">
+                  <td>Light <abbr data-popover-title="Device Address" data-popover="{{light.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
+                  <td> <span class="badge">{{light.v}}</span></td> <td></td></tr>
               </tbody>
             </table>
           </div><!-- /.col-sm-6 -->
@@ -197,11 +208,22 @@ function secondsToTime($seconds) {
               </thead>
               <tbody>
                 <!--<tr class="success"><td>Pool Level</td><td><span class="badge">5 m</span></td></tr>-->
-                <tr class="success"><td>Temperature1 {{temp1.address}}</td><td><span class="badge"><span ng-show="tempFormat == 'C'">{{temp1.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temp1.f}} F&deg;</span></span></td></tr>
-                <tr class="success"><td>Temperature2 {{temp2.address}}</td><td><span class="badge"><span ng-show="tempFormat == 'C'">{{temp2.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temp2.f}} F&deg;</span></span></td></tr>
-                <tr class="success"><td>Temperature3 {{temp3.address}}</td><td><span class="badge"><span ng-show="tempFormat == 'C'">{{temp3.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temp3.f}} F&deg;</span></span></td></tr>
-                <tr class="success"><td>Temperature4 {{temp4.address}}</td><td><span class="badge"><span ng-show="tempFormat == 'C'">{{temp4.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temp4.f}} F&deg;</span></span></td></tr>
-                <tr class="success"><td>Temperature5 {{temp5.address}}</td><td><span class="badge"><span ng-show="tempFormat == 'C'">{{temp5.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temp5.f}} F&deg;</span></span></td></tr>
+                <tr class="success">
+                  <td>
+                  Temperature1 <abbr data-popover-title="Device Address" data-popover="{{temp1.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
+                  <td><span class="badge"><span ng-show="tempFormat == 'C'">{{temp1.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temp1.f}} F&deg;</span></span></td></tr>
+                <tr class="success">
+                  <td>Temperature2 <abbr data-popover-title="Device Address" data-popover="{{temp2.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
+                  <td><span class="badge"><span ng-show="tempFormat == 'C'">{{temp2.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temp2.f}} F&deg;</span></span></td></tr>
+                <tr class="success">
+                  <td>Temperature3 <abbr data-popover-title="Device Address" data-popover="{{temp3.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
+                  <td><span class="badge"><span ng-show="tempFormat == 'C'">{{temp3.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temp3.f}} F&deg;</span></span></td></tr>
+                <tr class="success">
+                  <td>Temperature4 <abbr data-popover-title="Device Address" data-popover="{{temp4.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
+                  <td><span class="badge"><span ng-show="tempFormat == 'C'">{{temp4.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temp4.f}} F&deg;</span></span></td></tr>
+                <tr class="success">
+                  <td>Temperature5 <abbr data-popover-title="Device Address" data-popover="{{temp5.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
+                  <td><span class="badge"><span ng-show="tempFormat == 'C'">{{temp5.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temp5.f}} F&deg;</span></span></td></tr>
                 <!--<tr class="success"><td>Pump Running</td><td><i class="fa fa-cog fa-spin fa-lg green"></i></td></tr>-->
               </tbody>
             </table>
@@ -227,7 +249,7 @@ function secondsToTime($seconds) {
 
 
   <script id="routing">
-    angular.module('greenhouse', ['ngRoute', 'ngAnimate', 'cgBusy', 'angularMoment', 'ngMessages', 'chart.js']).
+    angular.module('greenhouse', ['ngRoute', 'ngAnimate', 'ui.bootstrap', 'cgBusy', 'angularMoment', 'ngMessages', 'chart.js']).
       config(['$routeProvider', function ($routeProvider) {
         $routeProvider.
          when("/", { templateUrl: "home.html", controller: "homeController" }).
@@ -330,9 +352,11 @@ function secondsToTime($seconds) {
                              $scope.loaded = true; //if false shows alternate screen if API fails to refresh
                              $scope.loading; //used to show system backdrop
 
-                             $scope.temperature = { c: 0.0, f: 0.0 };
+                             $scope.temperature = { c: 0.0, f: 0.0, address: '' };
                              $scope.humidityPercentage;
                              $scope.heatIndex = { c: 0.0, f: 0.0 };
+
+                             $scope.light = { v: 0.0, address: '' };
 
                              $scope.temp1 = { c: 0.0, f: 0.0, address: '' };
                              $scope.temp2 = { c: 0.0, f: 0.0, address: '' };
@@ -428,28 +452,32 @@ function secondsToTime($seconds) {
                                      
                                      $scope.temperature.c = data.data.DHT.TempC;
                                      $scope.temperature.f = C2F(data.data.DHT.TempC);
-                                     $scope.humidityPercentage = data.data.DHT.HumidityPercent;
+                                     $scope.temperature.address = data.data.DHT.Address;
+                                     $scope.humidityPercentage = data.data.DHT.HumidityPercent;                                     
                                      $scope.heatIndex.f = heatIndex($scope.temperature.f, $scope.humidityPercentage);
                                      $scope.heatIndex.c = F2C($scope.heatIndex.f);
-                                     
-                                     $scope.temp1.c = data.data.Temperatures.Temp1.TempC;
-                                     $scope.temp1.address = data.data.Temperatures.Temp1.Address;
+
+                                     $scope.light.v = data.data.Light.Light;
+                                     $scope.light.address = data.data.Light.Address;
+
+                                     $scope.temp1.c = data.data.Temperatures[0].TempC;
+                                     $scope.temp1.address = data.data.Temperatures[0].Address;
                                      $scope.temp1.f = C2F($scope.temp1.c);
 
-                                     $scope.temp2.c = data.data.Temperatures.Temp2.TempC;
-                                     $scope.temp2.address = data.data.Temperatures.Temp2.Address;
+                                     $scope.temp2.c = data.data.Temperatures[1].TempC;
+                                     $scope.temp2.address = data.data.Temperatures[1].Address;
                                      $scope.temp2.f = C2F($scope.temp2.c);
 
-                                     $scope.temp3.c = data.data.Temperatures.Temp3.TempC;
-                                     $scope.temp3.address = data.data.Temperatures.Temp3.Address;
+                                     $scope.temp3.c = data.data.Temperatures[2].TempC;
+                                     $scope.temp3.address = data.data.Temperatures[2].Address;
                                      $scope.temp3.f = C2F($scope.temp3.c);
 
-                                     $scope.temp4.c = data.data.Temperatures.Temp4.TempC;
-                                     $scope.temp4.address = data.data.Temperatures.Temp4.Address;
+                                     $scope.temp4.c = data.data.Temperatures[3].TempC;
+                                     $scope.temp4.address = data.data.Temperatures[3].Address;
                                      $scope.temp4.f = C2F($scope.temp4.c);
 
-                                     $scope.temp5.c = data.data.Temperatures.Temp5.TempC;
-                                     $scope.temp5.address = data.data.Temperatures.Temp5.Address;
+                                     $scope.temp5.c = data.data.Temperatures[4].TempC;
+                                     $scope.temp5.address = data.data.Temperatures[4].Address;
                                      $scope.temp5.f = C2F($scope.temp5.c);
 
                                    },
