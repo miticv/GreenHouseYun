@@ -1,6 +1,8 @@
 #!/usr/bin/python
 import sys
 import MySQLdb
+import json
+import urllib2
 import config
 import mysqlSensorsSettings
 
@@ -11,10 +13,10 @@ db = MySQLdb.connect(config.mysql['host'], config.mysql['user'], config.mysql['p
 cursor = db.cursor()
 
 # Prepare SQL query to INSERT a Log record into the database.
-sqlLog = "INSERT INTO sensorLog ('jobName') VALUES ('%s')" % (sys.argv[1])
+sqlLog = "INSERT INTO sensorLog (jobName) VALUES ('%s')" % (sys.argv[1])
 # Prepare SQL query to INSERT all sensors into the database.
-data = json.load(urllib2.urlopen(arduino.dataUrl))
-sqlItem = "INSERT INTO sensorValue (logId, sensorId, value) VALUES ( %s %s %s )"
+data = json.load(urllib2.urlopen(config.arduino['dataUrl']))
+sqlItem = "INSERT INTO sensorValue (logId, sensorId, value) VALUES ( %s, %s, %s )"
 id = 0
 
 ########## add log
@@ -28,15 +30,12 @@ try:
 except:
    # Rollback in case there is any error
    db.rollback()
-
-if(id > 0)
+if(id > 0):
 	########## add items
-	for temps in data["Temperatures"]: 
-		sensorId = 0
-		for sensor in mysqlSensorsSettings.DbSensors
-			if(sensor[])
-
-		cursor.execute(sqlLog % (id,  ) )   
+	lookup = mysqlSensorsSettings.databaseSensors()
+	for temps in data["Temperatures"]: 		
+		print (sqlItem % (id, lookup.getSensorIdByAddress(temps["Address"]), temps["TempC"]))
+		cursor.execute(sqlItem % (id, lookup.getSensorIdByAddress(temps["Address"]), temps["TempC"]) )   
 		#except:
 
 
@@ -44,3 +43,7 @@ cursor.close()
 # disconnect from server
 db.close()
 
+
+
+#----- Usage------
+#python  mysqlLogSensor 'scheduled job'

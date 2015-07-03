@@ -53,17 +53,26 @@ CREATE  TABLE `sensor` (
   PRIMARY KEY (`sensorId`)
 ) ENGINE = MyISAM AUTO_INCREMENT=1;
 
-INSERT INTO sensor (deviceId, sensorAddress, sensorName, sensorType, sensorUnit) VALUES (1, '6CD', 'Temp1', 'Temperature', 'Celsius'); --1
-INSERT INTO sensor (deviceId, sensorAddress, sensorName, sensorType, sensorUnit) VALUES (1, '6D5', 'Temp2', 'Temperature', 'Celsius'); --2
-INSERT INTO sensor (deviceId, sensorAddress, sensorName, sensorType, sensorUnit) VALUES (1, '6DD', 'Temp3', 'Temperature', 'Celsius'); --3
-INSERT INTO sensor (deviceId, sensorAddress, sensorName, sensorType, sensorUnit) VALUES (1, '6E5', 'Temp4', 'Temperature', 'Celsius'); --4
-INSERT INTO sensor (deviceId, sensorAddress, sensorName, sensorType, sensorUnit) VALUES (1, '6ED', 'Temp5', 'Temperature', 'Celsius'); --5
+INSERT INTO sensor (deviceId, sensorAddress, sensorName, sensorType, sensorUnit) VALUES (1, '6CD', 'Temp1', 'DS18B20', 'Celsius'); --1
+INSERT INTO sensor (deviceId, sensorAddress, sensorName, sensorType, sensorUnit) VALUES (1, '6D5', 'Temp2', 'DS18B20', 'Celsius'); --2
+INSERT INTO sensor (deviceId, sensorAddress, sensorName, sensorType, sensorUnit) VALUES (1, '6DD', 'Temp3', 'DS18B20', 'Celsius'); --3
+INSERT INTO sensor (deviceId, sensorAddress, sensorName, sensorType, sensorUnit) VALUES (1, '6E5', 'Temp4', 'DS18B20', 'Celsius'); --4
+INSERT INTO sensor (deviceId, sensorAddress, sensorName, sensorType, sensorUnit) VALUES (1, '6ED', 'Temp5', 'DS18B20', 'Celsius'); --5
 
-INSERT INTO sensor (deviceId, sensorAddress, sensorName, sensorType, sensorUnit) VALUES (1, '', 'DHT', 'Temperature', 'Celsius');      --6
-INSERT INTO sensor (deviceId, sensorAddress, sensorName, sensorType, sensorUnit) VALUES (1, '', 'DHT', 'Humidity', '%');               --7
-INSERT INTO sensor (deviceId, sensorAddress, sensorName, sensorType, sensorUnit) VALUES (1, '', 'DHT', 'Heat Index', 'Celsius');       --8 
+INSERT INTO sensor (deviceId, sensorAddress, sensorName, sensorType, sensorUnit) VALUES (1, '', 'Temp', 'DHT', 'Celsius');      --6
+INSERT INTO sensor (deviceId, sensorAddress, sensorName, sensorType, sensorUnit) VALUES (1, '', 'Humidity', 'DHT', '%');               --7
+INSERT INTO sensor (deviceId, sensorAddress, sensorName, sensorType, sensorUnit) VALUES (1, '', 'Heat Index', 'DHT', 'Celsius');       --8 
 
-INSERT INTO sensor (deviceId, sensorAddress, sensorName, sensorType, sensorUnit) VALUES (1, '', 'Light', 'Light Exposure', 'Luminas'); --9
+INSERT INTO sensor (deviceId, sensorAddress, sensorName, sensorType, sensorUnit) VALUES (1, '', 'Light', 'photocell', 'Luminas'); --9
+
+-- Table: sensorLog
+CREATE  TABLE `sensorLog` (
+  `logId` INT UNSIGNED NOT NULL AUTO_INCREMENT , 
+  `logDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `jobName`  VARCHAR(45) NOT NULL COMMENT 'Job that triggered this log entry',  
+  PRIMARY KEY (`logId`)
+) ENGINE = MyISAM AUTO_INCREMENT=1;
+
 
 -- Table: sensorValue
 CREATE  TABLE `sensorValue` (
@@ -72,14 +81,6 @@ CREATE  TABLE `sensorValue` (
   `sensorId` INT UNSIGNED NOT NULL ,
   `value` DECIMAL(6,2) NOT NULL ,  
   PRIMARY KEY (`sensorValueId`)
-) ENGINE = MyISAM AUTO_INCREMENT=1;
-
--- Table: sensorLog
-CREATE  TABLE `sensorLog` (
-  `logId` INT UNSIGNED NOT NULL AUTO_INCREMENT , 
-  `logDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `jobName`  VARCHAR(45) NOT NULL COMMENT 'Job that triggered this log entry',  
-  PRIMARY KEY (`logId`)
 ) ENGINE = MyISAM AUTO_INCREMENT=1;
 
 

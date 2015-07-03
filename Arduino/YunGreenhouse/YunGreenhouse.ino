@@ -244,14 +244,15 @@ void ReadDHT(){
 void ReadTemps(){
 
 	sensors.requestTemperatures();
-	client.print("{");
+	client.print("[");
 	for (i = 0; i < numberOfDevices; i++)
-	{
-		client.print("\"Temp");
-		client.print(i + 1);
-		client.print("\": {");
-		client.print("\"Address\": \"");
+	{		
+		client.print("{");
+		client.print("\"PhusicalAddress\": \"");
 		client.print((int)tempSensors[i], HEX);
+		client.print("\", \"Address\": \"");
+		client.print("T");
+		client.print(i);
 		client.print("\" ,");
 		client.print("\"TempC\": ");		
 		if (tempSensorsReadable[i]){ 
@@ -269,7 +270,7 @@ void ReadTemps(){
 		client.print("}");
 		if (i != (numberOfDevices - 1)) client.print(", ");
 	}
-	client.print("}");
+	client.print("]");
 }
 
 void ShowLastError(){
