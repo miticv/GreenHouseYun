@@ -22,8 +22,7 @@ except:
    db.rollback()
 
 
-cursor.close()
-
 # disconnect from server
+cursor.close()
 db.close()
 

@@ -83,11 +83,17 @@ CREATE  TABLE `sensorValue` (
   PRIMARY KEY (`sensorValueId`)
 ) ENGINE = MyISAM AUTO_INCREMENT=1;
 
+CREATE VIEW 'dailyLog' AS
+SELECT l.logId, l.jobName, l.logDate,  s.sensorType, s.sensorName, v.value, s.sensorUnit
+FROM arduino.sensorValue v, arduino.sensor s, arduino.sensorLog l
+where v.sensorId = s.sensorId and v.logId = l.logid
+order by l.logDate;
+
 
 # to make log entry first add sensorLog reord:
-INSERT INTO sensorLog (jobName) VALUES ('cronos 20min job');
+#INSERT INTO sensorLog (jobName) VALUES ('cronos 20min job');
 # then add for each sensor the measured value:
-INSERT INTO sensorValue (logId, sensorId, value) VALUES ( );
+#INSERT INTO sensorValue (logId, sensorId, value) VALUES ( );
 
 
 -- Index: idx_sensorLog

@@ -1,10 +1,14 @@
 #!/usr/bin/python
+#USAGE:
+#python  mysqlLogSensor "scheduled job"
+
 import sys
 import MySQLdb
 import json
 import urllib2
 import config
 import mysqlSensorsSettings
+import libArduinoSensors
 
 # Open database connection
 db = MySQLdb.connect(config.mysql['host'], config.mysql['user'], config.mysql['psw'], config.mysql['db'] )
@@ -15,13 +19,16 @@ cursor = db.cursor()
 # Prepare SQL query to INSERT a Log record into the database.
 sqlLog = "INSERT INTO sensorLog (jobName) VALUES ('%s')" % (sys.argv[1])
 # Prepare SQL query to INSERT all sensors into the database.
-data = json.load(urllib2.urlopen(config.arduino['dataUrl']))
 sqlItem = "INSERT INTO sensorValue (logId, sensorId, value) VALUES ( %s, %s, %s )"
+# Get sensor data from Arduino
+data = libArduinoSensors.arduinoSensors().ArduinoData
+
 id = 0
 
 ########## add log
 try:
    # Execute the SQL command
+   #print sqlLog
    cursor.execute(sqlLog)   
    id = cursor.lastrowid
    # Commit your changes in the database
@@ -29,21 +36,27 @@ try:
    
 except:
    # Rollback in case there is any error
+   #print "Error!"
    db.rollback()
+print id
 if(id > 0):
 	########## add items
 	lookup = mysqlSensorsSettings.databaseSensors()
+
+	#log Temperatures
 	for temps in data["Temperatures"]: 		
-		print (sqlItem % (id, lookup.getSensorIdByAddress(temps["Address"]), temps["TempC"]))
+		#print (sqlItem % (id, lookup.getSensorIdByAddress(temps["Address"]), temps["TempC"]))
 		cursor.execute(sqlItem % (id, lookup.getSensorIdByAddress(temps["Address"]), temps["TempC"]) )   
-		#except:
 
+	#log DHT sensor
+	cursor.execute(sqlItem % (id, lookup.getSensorIdByNameType("Temp", "DHT"), data["DHT"]["TempC"] ) )  
+	cursor.execute(sqlItem % (id, lookup.getSensorIdByNameType("Humidity", "DHT"),  data["DHT"]["HumidityPercent"] ) )  
+	cursor.execute(sqlItem % (id, lookup.getSensorIdByNameType("Heat Index", "DHT"), data["DHT"]["HeatIndexF"] ) )  
 
-cursor.close()
+	#log Light sensor
+	cursor.execute(sqlItem % (id, lookup.getSensorIdByAddress(data["Light"]["Address"]),  data["Light"]["Light"] ) )   
+
 # disconnect from server
+cursor.close()
 db.close()
 
-
-
-#----- Usage------
-#python  mysqlLogSensor 'scheduled job'

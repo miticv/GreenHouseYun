@@ -96,56 +96,53 @@ void loop() {
   // There is a new client?
   if (client) {
     // read the command
-    String command = client.readString();
+	String command = client.readString();
     command.trim();        //kill whitespace
-	if (isCommandFromYUN(&command)){
-		/* YUN calling for data */
-		if (isYunDataArgument(&command)){
-			ReadDataConcise(true);
-		}
-		else{
-			/* YUN calling wrong argument */
-			client.print("{\"Invalid command\"}");
-		}
+	//if (command.indexOf(" HTTP/1.1") > -1)
+	//{
+	//	command = command.substring(0, command.indexOf(" HTTP/1.1"));
+	//}
+	//client.print("command is: '");
+	//client.print(command);
+	//client.println("'");
+
+	clientSendJSON();
+
+	if (command == "temp") {
+		ReadDHT();
+	}
+	else if (command == "temps") {
+		ReadTemps();
+	}
+	else if (command == "light") {
+		ReadLight();
+	}
+	else if (command == "err") {
+		ShowLastError();
+	}
+	else if (command == "reset") {
+		ResetArduino();
+	}
+	else if (command == "date") {
+		ReadDate();
+	}
+	else if (command == "data" || command.indexOf("GET /data") > -1 || command == "") {
+		ReadData();
+	}
+	else if (command == "sendssm") {
+		SendTextMessage("Flood warning test", false);
+	}
+	else if (command == "sendmsm") {
+		SendTextMessage("Flood warning test!", true);
+	}
+	else if (command == "makephonecall") {
+		MakePhoneCall("Some random message");
 	}
 	else{
-		/* API calling for data */
-		clientSendJSON();
-
-		if (command == "temp") {
-			ReadDHT();
-		}
-		else if (command == "temps") {
-			ReadTemps();
-		}
-		else if (command == "light") {
-			ReadLight();
-		}
-		else if (command == "err") {
-			ShowLastError();
-		}
-		else if (command == "reset") {
-			ResetArduino();
-		}
-		else if (command == "date") {
-			ReadDate();
-		}
-		else if (command == "data") {
-			ReadData();
-		}
-		else if (command == "sendssm") {
-			SendTextMessage("Flood warning test", false);
-		}
-		else if (command == "sendmsm") {
-			SendTextMessage("Flood warning test!", true);
-		}
-		else if (command == "makephonecall") {
-			MakePhoneCall("Some random message");
-		}
-		else{
-			ShowCommands(command);
-		}
+		ReadData();
+		//ShowCommands(command);
 	}
+
     // Close connection and free resources.
     client.stop();
     
@@ -366,14 +363,18 @@ void printShellCommand(char* str){
 	}
 
 }
-
-bool isCommandFromYUN(String *command){
-	return (*command).indexOf("127.0.0.1:5555") > -1;
-}
-
-bool isYunDataArgument(String *command){
-	return (*command).indexOf("GET /data HTTP/") > -1;
-}
+//
+//bool isCommandFromYUN(String *command){
+//	client.print("isCommandFromYUN:");
+//	client.println((*command).indexOf("127.0.0.1:5555"));
+//	return (*command).indexOf("127.0.0.1:5555") > -1;
+//}
+//
+//bool isYunDataArgument(String *command){
+//	client.print("isYunDataArgument:");
+//	client.println((*command).indexOf("127.0.0.1:5555"));
+//	return (*command).indexOf("GET /data HTTP/") > -1;	
+//}
 
 
 void printAddress(uint8_t* address){
