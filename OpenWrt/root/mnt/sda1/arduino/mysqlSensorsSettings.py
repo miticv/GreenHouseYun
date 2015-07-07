@@ -13,7 +13,7 @@ import MySQLdb
 import config
 
 class databaseSensors:
-	""" Class that get database structure of all available sensors,  """
+	""" It gets sensors from the database into self.DbSensors and provice few search and print functions  """
 	DbSensors = { 'sensors' : []}
 
 	def __init__(self):   

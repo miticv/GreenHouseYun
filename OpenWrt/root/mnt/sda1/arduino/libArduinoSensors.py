@@ -13,6 +13,7 @@ import urllib2
 import config
 
 class arduinoSensors:
+	""" It calls arduino API and get JSON into self.ArduinoData """
 
 	ArduinoData = None
 	myresponse = None
