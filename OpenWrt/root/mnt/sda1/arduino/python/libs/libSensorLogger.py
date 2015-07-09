@@ -1,6 +1,22 @@
 #!/usr/bin/python
 #USAGE:
-#create one instance for one set of log:
+#import libs.libSensorLogger as logger
+#lib = logger.sensorLogger(5)
+#Optional argument is to get FAKE Arduino data:
+#lib = logger.sensorLogger(1, True)
+#
+#1, 'manual'
+#2, 'web'
+#3, 'startup scheduled'
+#4, '1 minute scheduled '
+#5, '10 minute scheduled '
+#6, '1 hour scheduled '
+#7, '24 hour scheduled '
+#8, '1 month scheduled '
+#9, '6 month scheduled '
+#10, '1 year scheduled '
+#11, 'Unit testing'
+
 
 import sys
 import MySQLdb
@@ -17,12 +33,12 @@ class sensorLogger:
 	useTestApi = False
 	#create log ID with lonName
 	#it will also log all sensors to DB
-	def __init__(self, logName, useTestApi = False):  
+	def __init__(self, jobId, useTestApi = False):  
 		#Log ID
 		self.logId = -1
 		self.useTestApi = useTestApi
 		# Prepare SQL query to INSERT a Log record into the database.
-		sqlLog = "INSERT INTO sensorLog(jobName) VALUES('%s')" % (logName)
+		sqlLog = "INSERT INTO sensorLog(jobId) VALUES(%s)" % (jobId)
 
 		self._connect()
 		try:

@@ -1,1 +1,1 @@
-python /mnt/sda1/arduino/mysqlLogDetail.py 'System Startup'
+python /mnt/sda1/arduino/python/loggerInfo.py 'System Startup'

@@ -1,11 +1,11 @@
 #!/usr/bin/python
 # USAGE:
 # start date:
-# python c:\work\git\GreenHouseYun\OpenWrt\root\mnt\sda1\arduino\python\apiGetErrors.py "2015-07-09 07-00-00"
+# python c:\work\git\GreenHouseYun\OpenWrt\root\mnt\sda1\arduino\python\apiGetSensorLog.py "2015-07-09 07-00-00"
 # end date:
-# python c:\work\git\GreenHouseYun\OpenWrt\root\mnt\sda1\arduino\python\apiGetErrors.py "2015-07-09 07-00-00" "2015-07-09 10-00-00"
+# python c:\work\git\GreenHouseYun\OpenWrt\root\mnt\sda1\arduino\python\apiGetSensorLog.py "2015-07-09 07-00-00" "2015-07-09 10-00-00"
 # all:
-# >python c:\work\git\GreenHouseYun\OpenWrt\root\mnt\sda1\arduino\python\apiGetErrors.py
+# >python c:\work\git\GreenHouseYun\OpenWrt\root\mnt\sda1\arduino\python\apiGetSensorLog.py
 
 import sys
 import os
@@ -27,7 +27,7 @@ else:
 
 
 if(startDate == "" and endDate == ""):
-	sql = "SELECT * FROM log where logType = 1 order by logDate desc"
+	sql = "SELECT * FROM dailyLog where logType = 1 order by logDate desc"
 
 elif(startDate != "" and endDate == ""):
 	sql = "SELECT * FROM log where logType = 1 and logDate > '" + startDate + "' order by logDate desc"

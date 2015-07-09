@@ -1,6 +1,10 @@
 #!/usr/bin/python
 #USAGE:
-#
+#import libs.libDbToJson as dbjson
+#lib = dbjson.dbJson()
+#result = lib.runQuery("SELECT * FROM job")
+#print result
+
 import MySQLdb
 import config
 import itertools
@@ -19,15 +23,15 @@ class dbJson:
     def runQuery(self, sql):
         db = MySQLdb.connect(config.mysql['host'], config.mysql['user'], config.mysql['psw'], config.mysql['db'] )
         cursor = db.cursor()
-        #try:
+        try:
             # Execute the SQL command and store sensors info in DbSensors structure
-        cursor.execute(sql )
-        print sql
-        results = self._dictfetchall(cursor)
-        json_results = json.dumps(results, cls = MyEncoder)
-        return json_results
-        #except:
-        #    raise ValueError('Database connection issue')
+            cursor.execute(sql )
+            results = self._dictfetchall(cursor)
+            json_results = json.dumps(results, cls = MyEncoder)
+            return json_results
+        except:
+            #log error to db?
+            raise ValueError('Database issue')
 
         # disconnect from server
         cursor.close()      

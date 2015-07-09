@@ -1,1 +1,2 @@
-python /mnt/sda1/arduino/python/logSensors.py "10m scheduled"
+#5, '10 minute scheduled '
+python /mnt/sda1/arduino/python/logSensors.py 5

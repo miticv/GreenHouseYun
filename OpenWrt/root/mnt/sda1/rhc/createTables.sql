@@ -70,7 +70,7 @@ INSERT INTO sensor (deviceId, sensorAddress, sensorName, sensorType, sensorUnit)
 CREATE  TABLE `sensorLog` (
   `logId` INT UNSIGNED NOT NULL AUTO_INCREMENT , 
   `logDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `jobName`  VARCHAR(45) NOT NULL COMMENT 'Job that triggered this log entry',  
+  `jobId`  INT NOT NULL COMMENT 'Job that triggered this log entry',  
   PRIMARY KEY (`logId`)
 ) ENGINE = InnoDB AUTO_INCREMENT=1;
 
@@ -84,10 +84,29 @@ CREATE  TABLE `sensorValue` (
   PRIMARY KEY (`sensorValueId`)
 ) ENGINE = InnoDB AUTO_INCREMENT=1;
 
+CREATE  TABLE `job` (
+  `jobId` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `jobDescription` VARCHAR(45) NULL ,
+  PRIMARY KEY (`jobId`) );
+
+INSERT INTO job (jobId, jobDescription) VALUES (1, 'manual');
+INSERT INTO job (jobId, jobDescription) VALUES (2, 'web');
+INSERT INTO job (jobId, jobDescription) VALUES (3, 'startup scheduled');
+INSERT INTO job (jobId, jobDescription) VALUES (4, '1 minute scheduled ');
+INSERT INTO job (jobId, jobDescription) VALUES (5, '10 minute scheduled ');
+INSERT INTO job (jobId, jobDescription) VALUES (6, '1 hour scheduled ');
+INSERT INTO job (jobId, jobDescription) VALUES (7, '24 hour scheduled ');
+INSERT INTO job (jobId, jobDescription) VALUES (8, '1 month scheduled ');
+INSERT INTO job (jobId, jobDescription) VALUES (9, '6 month scheduled ');
+INSERT INTO job (jobId, jobDescription) VALUES (10, '1 year scheduled ');
+INSERT INTO job (jobId, jobDescription) VALUES (11, 'Unit testing');
+
+
+
 CREATE VIEW dailyLog AS
-SELECT l.logId, l.jobName, l.logDate,  s.sensorType, s.sensorName, v.value, s.sensorUnit
-FROM arduino.sensorValue v, arduino.sensor s, arduino.sensorLog l
-where v.sensorId = s.sensorId and v.logId = l.logid
+SELECT l.logId, j.jobId, j.jobDescription, l.logDate,  s.sensorType, s.sensorName, v.value, s.sensorUnit
+FROM arduino.sensorValue v, arduino.sensor s, arduino.sensorLog l, arduino.job j
+where v.sensorId = s.sensorId and v.logId = l.logid and l.jobId = j.jobId
 order by l.logDate;
 
 #Index: idx_sensorLog

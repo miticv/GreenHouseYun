@@ -8,6 +8,14 @@ loggerInfo.py
 #Make logger Error entry
 loggerError.py
 
+#backup and compress the database
+dbBackup.py
+
+#get error logs drom db
+apiGetErrors.py
+
+#get daily logs drom db
+apiGetSensorLog.py
 
 LIBS:
 	#saves configuration cariables

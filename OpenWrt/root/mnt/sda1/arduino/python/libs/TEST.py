@@ -1,4 +1,11 @@
 #!/usr/bin/python
+#USAGE:
+# will NOT try to qyery Arduino data:
+#python /mnt/sda1/arduino/python/libs/TEST.py
+#will do live test:
+##python /mnt/sda1/arduino/python/libs/TEST.py live
+
+
 import os
 import sys
 import config
@@ -82,7 +89,7 @@ class testing:
 
 	def testlibSensorLogger(self):
 		error = ""
-		lib = libSensorLogger.sensorLogger('test logger', True)
+		lib = libSensorLogger.sensorLogger(11, True)
 		self.showResult(error)
 
 	def input(self):
