@@ -54,7 +54,8 @@ if(id > 0):
 	cursor.execute(sqlItem % (id, lookup.getSensorIdByNameType("Heat Index", "DHT"), data["DHT"]["HeatIndexF"] ) )  
 
 	#log Light sensor
-	cursor.execute(sqlItem % (id, lookup.getSensorIdByAddress(data["Light"]["Address"]),  data["Light"]["Light"] ) )   
+	cursor.execute(sqlItem % (id, lookup.getSensorIdByAddress(data["Light"]["Address"]),  data["Light"]["Light"] ) )
+	db.commit()   
 
 # disconnect from server
 cursor.close()

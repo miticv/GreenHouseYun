@@ -1,2 +1,1 @@
-python /mnt/sda1/arduino/mysqlLogDetail.py '1 hour'
-python /mnt/sda1/arduino/mysqlLogSensors.py 'scheduled 1h'
+python /mnt/sda1/arduino/python/logSensors.py "10m scheduled"

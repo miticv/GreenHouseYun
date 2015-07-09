@@ -1,1 +1,1 @@
-#python /mnt/sda1/arduino/mysqlLogDetail.py '1 minute'
+#python /mnt/sda1/arduino/python/loggerInfo.py "1m job has ran"

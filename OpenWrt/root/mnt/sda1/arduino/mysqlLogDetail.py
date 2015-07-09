@@ -10,7 +10,7 @@ db = MySQLdb.connect(config.mysql['host'], config.mysql['user'], config.mysql['p
 cursor = db.cursor()
 
 # Prepare SQL query to INSERT a record into the database.
-sql = "INSERT INTO logs(`logDetail`)VALUES('%s')" % (sys.argv[1])
+sql = "INSERT INTO log(`logDetail`)VALUES('%s')" % (sys.argv[1])
 
 try:
    # Execute the SQL command
