@@ -10,11 +10,16 @@ CREATE TABLE `log` (
   `logId` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `logDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `logDetail` varchar(100) DEFAULT NULL,
-  `logType` INT NULL,
+  `logType` INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`logId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-INSERT INTO log(`logDetail`)VALUES('crated table');
+#Index: idx_logType
+CREATE INDEX idx_logType ON log ( 
+    logType 
+);
+
+INSERT INTO log(`logDetail`, `logType`)VALUES('crated table', 0);
 
 #Table: setting
 CREATE  TABLE `setting` (
@@ -74,6 +79,10 @@ CREATE  TABLE `sensorLog` (
   PRIMARY KEY (`logId`)
 ) ENGINE = InnoDB AUTO_INCREMENT=1;
 
+#Index: idx_sensorLog
+CREATE INDEX idx_sensorLog ON sensorLog ( 
+    logDate 
+);
 
 #Table: sensorValue
 CREATE  TABLE `sensorValue` (
@@ -84,10 +93,16 @@ CREATE  TABLE `sensorValue` (
   PRIMARY KEY (`sensorValueId`)
 ) ENGINE = InnoDB AUTO_INCREMENT=1;
 
+#Index: idx_sensorValue
+CREATE INDEX idx_sensorValue ON sensorLog ( 
+    logDate 
+);
+
 CREATE  TABLE `job` (
   `jobId` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `jobDescription` VARCHAR(45) NULL ,
-  PRIMARY KEY (`jobId`) );
+  PRIMARY KEY (`jobId`) 
+  )ENGINE = InnoDB AUTO_INCREMENT=1;
 
 INSERT INTO job (jobId, jobDescription) VALUES (1, 'manual');
 INSERT INTO job (jobId, jobDescription) VALUES (2, 'web');
@@ -109,14 +124,8 @@ FROM arduino.sensorValue v, arduino.sensor s, arduino.sensorLog l, arduino.job j
 where v.sensorId = s.sensorId and v.logId = l.logid and l.jobId = j.jobId
 order by l.logDate;
 
-#Index: idx_sensorLog
-CREATE INDEX idx_sensorLog ON sensorLog ( 
-    logDate 
-);
 
-#Index: idx_sensorValue
-CREATE INDEX idx_sensorValue ON sensorLog ( 
-    logDate 
-);
+
+
 
 

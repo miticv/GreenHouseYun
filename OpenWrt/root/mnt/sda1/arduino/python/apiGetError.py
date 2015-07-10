@@ -1,11 +1,11 @@
 #!/usr/bin/python
 # USAGE:
 # start date:
-# python c:\work\git\GreenHouseYun\OpenWrt\root\mnt\sda1\arduino\python\apiGetErrors.py "2015-07-09 07-00-00"
+# python /mnt/sda1/arduino/python/apiGetError.py "2015-07-09 07-00-00"
 # end date:
-# python c:\work\git\GreenHouseYun\OpenWrt\root\mnt\sda1\arduino\python\apiGetErrors.py "2015-07-09 07-00-00" "2015-07-09 10-00-00"
+# python /mnt/sda1/arduino/python/apiGetError.py "2015-07-09 07-00-00" "2015-07-09 10-00-00"
 # all:
-# >python c:\work\git\GreenHouseYun\OpenWrt\root\mnt\sda1\arduino\python\apiGetErrors.py
+# >python /mnt/sda1/arduino/python/apiGetError.py
 
 import sys
 import os
