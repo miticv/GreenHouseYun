@@ -37,6 +37,10 @@ function main() {
 	    		$value = get_SensorUptimeData();    		
 	    		break;
 
+	    	case "reset_arduino":
+	    		$value = do_arduino_reset();    		
+	    		break;
+
 	       default:
 	       		return_Error("Invalid Call");
 	    }//end switch
@@ -177,6 +181,16 @@ function return_Error($errorStr){
   	print '"}';
   
 	exit(0);
+}
+
+function do_arduino_reset(){
+
+	$execStr = 'reset-mcu';    
+  	if($debug) { header('Debug-value: ' . $execStr); }
+
+  	exec(trim($execStr), $result);  
+  	return '{"Reboot" : "Completed"}';
+
 }
 
 ?>
