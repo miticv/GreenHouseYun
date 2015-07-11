@@ -11,7 +11,7 @@ import itertools
 import json
 import datetime
 from time import mktime
-
+import decimal
 
 class dbJson:
     """  """
@@ -31,7 +31,9 @@ class dbJson:
             return json_results
         except:
             #log error to db?
-            raise ValueError('Database issue')
+            #raise ValueError(e)
+            #self.test = "oh-o"
+            raise
 
         # disconnect from server
         cursor.close()      
@@ -50,7 +52,12 @@ class MyEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime.datetime):
             return int(mktime(obj.timetuple()))
-
+        if isinstance(obj, decimal.Decimal):
+            return float(obj)
+            # wanted a simple yield str(obj) in the next line,
+            # but that would mean a yield on the line with super(...),
+            # which wouldn't work (see my comment below), so...
+            #return (str(obj) for obj in [obj])
         return json.JSONEncoder.default(self, obj)
 
              

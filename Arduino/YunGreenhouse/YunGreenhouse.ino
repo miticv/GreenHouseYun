@@ -123,21 +123,21 @@ void loop() {
 	else if (command == "reset") {
 		ResetArduino();
 	}
-	else if (command == "date") {
-		ReadDate();
-	}
+	//else if (command == "date") {
+	//	ReadDate();
+	//}
 	else if (command == "data" || command.indexOf("GET /data") > -1 || command == "") {
 		ReadData();
 	}
-	else if (command == "sendssm") {
-		SendTextMessage("Flood warning test", false);
-	}
-	else if (command == "sendmsm") {
-		SendTextMessage("Flood warning test!", true);
-	}
-	else if (command == "makephonecall") {
-		MakePhoneCall("Some random message");
-	}
+	//else if (command == "sendssm") {
+	//	SendTextMessage("Flood warning test", false);
+	//}
+	//else if (command == "sendmsm") {
+	//	SendTextMessage("Flood warning test!", true);
+	//}
+	//else if (command == "makephonecall") {
+	//	MakePhoneCall("Some random message");
+	//}
 	else{
 		ReadData();
 		//ShowCommands(command);
@@ -161,43 +161,27 @@ void ShowCommands(String command){
 	client.print("\"temp\":\"List temperature and humidity\",");
 	client.print("\"temps\":\"List temperatures\",");
 	client.print("\"light\":\"Measure light\",");
-	client.print("\"date\":\"Show current device date time\",");
+	//client.print("\"date\":\"Show current device date time\",");
 	client.print("\"data\":\"Show sensor data\",");
-	client.print("\"makephonecall\":\"make a phone call\",");
+/*	client.print("\"makephonecall\":\"make a phone call\",");
 	client.print("\"sendssm\":\"Send message to phone\",");
-	client.print("\"sendmsm\":\"Send message to phone with picture\",");			
+	client.print("\"sendmsm\":\"Send message to phone with picture\",");	*/		
 	client.print("\"err\":\"Show last error\",");
 	client.print("\"reset\":\"Reset Arduino\"");
 	client.print("}");
 }
 
 
-void ReadDataConcise(bool closeBrackets){
+void ReadData(){
 	client.print("{ \"Light\": ");
 	ReadLight();
 	client.print(", \"DHT\": ");
 	ReadDHT();
 	client.print(", \"Temperatures\": ");
 	ReadTemps();
-	if (closeBrackets){
-		client.print("}");
-	}
-}
-
-void ReadData(){
-	ReadDataConcise(false);
-	client.print(", \"DeviceTime\": ");
-	ReadDate();
 	client.print("}");
 }
 
-
-void ReadDate() {
-
-	client.print("{ \"DateTime\":\"");
-	printShellCommand("date +\"%Y-%m-%d %H:%M:%S\"");
-	client.print("\" }");
-}
 
 void ReadLight(){
 
@@ -282,48 +266,48 @@ void ResetArduino(){
 	resetFunc();
 }
 
-void MakePhoneCall(char* test) {
-
-	client.print("{ \"sid\": \"");
-	printShellCommand("python /mnt/sda1/arduino/call-number.py");
-	client.print("\" }");
-}
-
-void SendTextMessage(char* textMessage, bool withPicture){
-
-	strcpy(tempString, "\""); 
-	strcat(tempString, textMessage);
-	strcat(tempString, "\"");
-
-	p.begin("python"); // Process that launch the "python" command
-	if (withPicture){
-		p.addParameter("/mnt/sda1/arduino/send-mms-webpic.py"); // Add the path parameter
-		p.addParameter(tempString); // The message body		
-	}
-	else{
-		p.addParameter("/mnt/sda1/arduino/send-sms.py"); // Add the path parameter
-		p.addParameter(tempString); // The message body	
-	}
-	p.run(); // Run the process and wait for its termination
-	while (p.running());
-
-	if (withPicture){		
-		client.print("{ \"messageSent\": \"");
-		client.print(textMessage);
-		client.print("\", \"pictureSent\", \"http://miticv.duckdns.org:82/sd/images/");
-		while (p.available() > 0) {
-			client.print((char)p.read());
-		}
-		client.print("\"}");
-	}
-	else{
-		while (p.available()>0) {		
-		}
-		client.print("{ \"messageSent\": \"");
-		client.print(textMessage);
-		client.print("\" }");				
-	}	
-}
+//void MakePhoneCall(char* test) {
+//
+//	client.print("{ \"sid\": \"");
+//	printShellCommand("python /mnt/sda1/arduino/call-number.py");
+//	client.print("\" }");
+//}
+//
+//void SendTextMessage(char* textMessage, bool withPicture){
+//
+//	strcpy(tempString, "\""); 
+//	strcat(tempString, textMessage);
+//	strcat(tempString, "\"");
+//
+//	p.begin("python"); // Process that launch the "python" command
+//	if (withPicture){
+//		p.addParameter("/mnt/sda1/arduino/send-mms-webpic.py"); // Add the path parameter
+//		p.addParameter(tempString); // The message body		
+//	}
+//	else{
+//		p.addParameter("/mnt/sda1/arduino/send-sms.py"); // Add the path parameter
+//		p.addParameter(tempString); // The message body	
+//	}
+//	p.run(); // Run the process and wait for its termination
+//	while (p.running());
+//
+//	if (withPicture){		
+//		client.print("{ \"messageSent\": \"");
+//		client.print(textMessage);
+//		client.print("\", \"pictureSent\", \"http://miticv.duckdns.org:82/sd/images/");
+//		while (p.available() > 0) {
+//			client.print((char)p.read());
+//		}
+//		client.print("\"}");
+//	}
+//	else{
+//		while (p.available()>0) {		
+//		}
+//		client.print("{ \"messageSent\": \"");
+//		client.print(textMessage);
+//		client.print("\" }");				
+//	}	
+//}
 
 void clientSendJSON(){
 	client.println("Status: 200");
@@ -353,16 +337,16 @@ void SensorsSetUp(){
 
 }
 
-void printShellCommand(char* str){
-	p.runShellCommand(str);
-	while (p.running());
-
-	while (p.available()>0) {
-		temp = (char)p.read();
-		if (temp != '\n') client.print(temp);
-	}
-
-}
+//void printShellCommand(char* str){
+//	p.runShellCommand(str);
+//	while (p.running());
+//
+//	while (p.available()>0) {
+//		temp = (char)p.read();
+//		if (temp != '\n') client.print(temp);
+//	}
+//
+//}
 //
 //bool isCommandFromYUN(String *command){
 //	client.print("isCommandFromYUN:");

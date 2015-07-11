@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 #USAGE:
-# import libArduinoSensors
+# import libs.libArduinoSensors as libArduinoSensors
 # data = libArduinoSensors.arduinoSensors().ArduinoData
 # for temps in data["Temperatures"]:
 #	print temps["Address"]

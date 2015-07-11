@@ -15,6 +15,7 @@ if(len(sys.argv) > 1):
 	startDate = sys.argv[1]
 	startDate = startDate.replace('"', "")
 	startDate = startDate.replace("'", "")
+	startDate = startDate.strip()
 else:
 	startDate = ""
 
@@ -22,18 +23,21 @@ if(len(sys.argv) > 2):
 	endDate = sys.argv[2]
 	endDate = endDate.replace('"', "")
 	endDate = endDate.replace("'", "")
+	endDate = endDate.strip()
 else:
 	endDate = ""
 
+# jobId = 5 (10 min logs)
+# jobId = 6 (1 hour logs)
 
 if(startDate == "" and endDate == ""):
-	sql = "SELECT * FROM dailyLog where logType = 1 order by logDate desc"
+	sql = "SELECT * FROM dailyLog where jobId = 5 order by logDate desc"
 
 elif(startDate != "" and endDate == ""):
-	sql = "SELECT * FROM log where logType = 1 and logDate > '" + startDate + "' order by logDate desc"
+	sql = "SELECT * FROM dailyLog where jobId = 5 and logDate > '" + startDate + "' order by logDate desc"
 
 else: # if(endDate != ""):
-	sql = "SELECT * FROM log where logType = 1 and logDate > '" + startDate + "' and logDate < '" + endDate + "'  order by logDate desc"
+	sql = "SELECT * FROM dailyLog where jobId = 5 and logDate > '" + startDate + "' and logDate < '" + endDate + "'  order by logDate desc"
 
 
 lib = dbjson.dbJson()
