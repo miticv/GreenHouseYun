@@ -167,10 +167,10 @@ function secondsToTime($seconds) {
               <caption>System statistics</caption>
               <tbody>
                 <tr class="success">
-                  <td><i class="fa fa-heartbeat green"></i>  System running for <strong><span class="green"><?php print $uptimeDetails[0]; ?></span></strong> since last reboot </td>
+                  <td><i class="fa fa-heartbeat green"></i>  System running for <strong><span class="green">{{uptime}}</span></strong> since last reboot </td>
                 </tr>
                 <tr class="success">
-                  <td><i class="fa fa-tachometer green"></i> System utilization <strong><span class="green"><?php print $uptimeDetails[1]; ?></span></strong> </td>
+                  <td><i class="fa fa-tachometer green"></i> System utilization <strong><span class="green">{{util}}</span></strong> </td>
                 </tr>
               </tbody>
             </table>
@@ -261,8 +261,8 @@ function secondsToTime($seconds) {
     angular.module('greenhouse').
       service("greenApiService", ['$http', '$q', function ($http, $q) {
 
-        var host = 'http://miticv.duckdns.org:82/arduino';
-        //var host = '';
+        //var host = 'http://miticv.duckdns.org:82/arduino';
+        var host = '';
         return ({
 
           isAdmin: isAdmin,
@@ -288,7 +288,7 @@ function secondsToTime($seconds) {
           return $http({
             method: "put",
             headers: { 'PP': sessionStorage.getItem('pass') },
-            url: host + '/reboot'
+            url: host + '/sd/api.php?action=reset_arduino'
           });
         }
         //#endregion
@@ -305,7 +305,7 @@ function secondsToTime($seconds) {
         function getSensorStatus() {
           return $http({
             method: "get",
-            url: host + '/data'
+            url: host + '/sd/api.php?action=get_sensor_and_uptime_data'
           });
         }
         //#endregion
@@ -367,6 +367,9 @@ function secondsToTime($seconds) {
                              $scope.time; //stores moment format of the date on the device
                              $scope.timeLocal;
                              $scope.timeSinceText;
+
+                             $scope.uptime;
+                             $scope.util;
 
                              //functions:
                              $scope.load = load;
@@ -444,41 +447,46 @@ function secondsToTime($seconds) {
                                $scope.loading = greenApiService.getSensorStatus().then(
                                    function success(data) {
 
-                                     $scope.time = moment(data.data.DeviceTime.DateTime, "YYYY-MM-DD HH:mm:ss");
-                                     $scope.timeSinceText = moment(data.data.DeviceTime.DateTime, "YYYY-MM-DD HH:mm:ss");
+                                     $scope.time = moment(data.data.result.uptime.deviceTime.dateTime, "YYYY-MM-DD HH:mm:ss");
+                                     $scope.timeSinceText = moment(data.data.result.uptime.deviceTime.dateTime, "YYYY-MM-DD HH:mm:ss");
   
                                      $scope.timeLocal = moment();
                                      $scope.stopTime = $interval(runningTime, 1000);
                                      
-                                     $scope.temperature.c = data.data.DHT.TempC;
-                                     $scope.temperature.f = C2F(data.data.DHT.TempC);
-                                     $scope.temperature.address = data.data.DHT.Address;
-                                     $scope.humidityPercentage = data.data.DHT.HumidityPercent;                                     
+                                     $scope.temperature.c = data.data.result.sensors.DHT.TempC;
+                                     $scope.temperature.f = C2F(data.data.result.sensors.DHT.TempC);
+                                     $scope.temperature.address = data.data.result.sensors.DHT.Address;
+                                     $scope.humidityPercentage = data.data.result.sensors.DHT.HumidityPercent;                                     
                                      $scope.heatIndex.f = heatIndex($scope.temperature.f, $scope.humidityPercentage);
                                      $scope.heatIndex.c = F2C($scope.heatIndex.f);
 
-                                     $scope.light.v = data.data.Light.Light;
-                                     $scope.light.address = data.data.Light.Address;
+                                     $scope.light.v = data.data.result.sensors.Light.Light;
+                                     $scope.light.address = data.data.result.sensors.Light.Address;
 
-                                     $scope.temp1.c = data.data.Temperatures[0].TempC;
-                                     $scope.temp1.address = data.data.Temperatures[0].Address;
+                                     $scope.temp1.c = data.data.result.sensors.Temperatures[0].TempC;
+                                     $scope.temp1.address = data.data.result.sensors.Temperatures[0].Address;
                                      $scope.temp1.f = C2F($scope.temp1.c);
 
-                                     $scope.temp2.c = data.data.Temperatures[1].TempC;
-                                     $scope.temp2.address = data.data.Temperatures[1].Address;
+                                     $scope.temp2.c = data.data.result.sensors.Temperatures[1].TempC;
+                                     $scope.temp2.address = data.data.result.sensors.Temperatures[1].Address;
                                      $scope.temp2.f = C2F($scope.temp2.c);
 
-                                     $scope.temp3.c = data.data.Temperatures[2].TempC;
-                                     $scope.temp3.address = data.data.Temperatures[2].Address;
+                                     $scope.temp3.c = data.data.result.sensors.Temperatures[2].TempC;
+                                     $scope.temp3.address = data.data.result.sensors.Temperatures[2].Address;
                                      $scope.temp3.f = C2F($scope.temp3.c);
 
-                                     $scope.temp4.c = data.data.Temperatures[3].TempC;
-                                     $scope.temp4.address = data.data.Temperatures[3].Address;
+                                     $scope.temp4.c = data.data.result.sensors.Temperatures[3].TempC;
+                                     $scope.temp4.address = data.data.result.sensors.Temperatures[3].Address;
                                      $scope.temp4.f = C2F($scope.temp4.c);
 
-                                     $scope.temp5.c = data.data.Temperatures[4].TempC;
-                                     $scope.temp5.address = data.data.Temperatures[4].Address;
+                                     $scope.temp5.c = data.data.result.sensors.Temperatures[4].TempC;
+                                     $scope.temp5.address = data.data.result.sensors.Temperatures[4].Address;
                                      $scope.temp5.f = C2F($scope.temp5.c);
+
+                                     $scope.uptime = data.data.result.uptime.alive.uptime;
+                                     $scope.util = data.data.result.uptime.loadAverage.min1 + ', ' + 
+                                                   data.data.result.uptime.loadAverage.min5 + ', ' + 
+                                                   data.data.result.uptime.loadAverage.min15;
 
                                    },
                                    function error(e) {

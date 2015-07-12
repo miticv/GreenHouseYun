@@ -148,7 +148,7 @@ function get_Uptime(){
 	if($debug) { header('Debug-value3: ' . $execStr); }
 
 	$arr = array('alive'       => array('secAlive' => $intsecs[0], 'aliveFor'=> secondsToTime($intsecs[0]), 'uptime' => $uptimeDetails[0]) , 
-				 'loadAverage' => array('1min' => trim($loadAverage[0]), '5min' => trim($loadAverage[1]), '15min' => trim($loadAverage[2]), 'Description' => '0 is idle, 1 is fully utilized, 1.05 means 5% of processes waited for their turn.'),
+				 'loadAverage' => array('min1' => trim($loadAverage[0]), 'min5' => trim($loadAverage[1]), 'min15' => trim($loadAverage[2]), 'Description' => '0 is idle, 1 is fully utilized, 1.05 means 5% of processes waited for their turn.'),
 				 'deviceTime'  => array('dateTime' =>  trim($devicetime[0]) ) 
 				);
 	return json_encode($arr);
