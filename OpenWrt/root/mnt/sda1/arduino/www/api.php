@@ -33,6 +33,10 @@ function main() {
 	    		$value = get_SensorData();    		
 	    		break;
 
+	    	case "get_sensor_definitions":
+	    		$value = get_sensorsDatabseDefinitions();
+    			break;
+
 	    	case "get_sensor_and_uptime_data":
 	    		$value = get_SensorUptimeData();    		
 	    		break;
@@ -161,6 +165,13 @@ function get_SensorUptimeData(){
 	return '{ "sensors" : ' . $var1 . ', "uptime": ' . $var2 . '}';
 }
 
+function get_sensorsDatabseDefinitions(){
+	$execStr = 'python /mnt/sda1/arduino/python/apiGetSensorDefinitions.py';    
+  	if($debug) { header('Debug-value: ' . $execStr); }
+
+  	exec(trim($execStr), $result);  
+  	return $result[0];
+}
 //function removeJsonBrackets($jsonVar){
 //	$jsonVar = trim($jsonVar);
 //	return substr($jsonVar, 1, strlen($jsonVar)-1);
