@@ -88,9 +88,9 @@ class sensorLogger:
 			self._logSensor(  lookup.getSensorIdByAddress(temps["Address"]),        temps["TempC"]	                    )
 
 		#log DHT sensor
-		self._logSensor(	lookup.getSensorIdByNameType("Temp", "DHT"),            data["DHT"]["TempC"]	        )
-		self._logSensor(	lookup.getSensorIdByNameType("Humidity", "DHT"),        data["DHT"]["HumidityPercent"]	)
-		self._logSensor(	lookup.getSensorIdByNameType("Heat Index", "DHT"),      data["DHT"]["HeatIndexF"]	    )
+		self._logSensor(	lookup.getSensorIdByAddressSubAddress("Digital10", "Temperature"),    data["DHT"]["TempC"]	        )
+		self._logSensor(	lookup.getSensorIdByAddressSubAddress("Digital10", "Humidity"),       data["DHT"]["HumidityPercent"]	)
+		self._logSensor(	lookup.getSensorIdByAddressSubAddress("Digital10", "HeatIndex"),      data["DHT"]["HeatIndexF"]	    )
 
 		#log Light sensor
 		self._logSensor(	lookup.getSensorIdByAddress( data["Light"]["Address"]), data["Light"]["Light"]          )

@@ -161,8 +161,9 @@ function get_Uptime(){
 function get_SensorUptimeData(){
 	$var1 = get_SensorData();
     $var2 = get_Uptime();
+    $var3 = get_sensorsDatabseDefinitions();
 
-	return '{ "sensors" : ' . $var1 . ', "uptime": ' . $var2 . '}';
+	return '{ "sensors" : ' . $var1 . ', "uptime": ' . $var2 . ', "sensorLabels" : ' . $var3 . '}';
 }
 
 function get_sensorsDatabseDefinitions(){
