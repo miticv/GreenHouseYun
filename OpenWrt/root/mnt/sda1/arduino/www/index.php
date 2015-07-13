@@ -2,7 +2,8 @@
 
 // Add links to show error and info log!
 // Add graph showing history data
-// Use Database sensor name to show on the api, so we can use that DB name to show on front end
+// Do more error logging
+//DONE: Use Database sensor name to show on the api, so we can use that DB name to show on front end
 
 
 ?>
@@ -163,16 +164,16 @@
               </thead>
               <tbody>
                 <tr class="success">
-                  <td>Temperature <abbr data-popover-title="Device Address" data-popover="{{temperature.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
+                  <td>{{temperature.name}} <abbr data-popover-title="Device Address" data-popover="{{temperature.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
                   <td><span class="badge"><span ng-show="tempFormat == 'C'">{{temperature.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temperature.f}} F&deg;</span></span></td><td></td></tr>
                 <tr class="success">
-                  <td>Humidity</td>
-                  <td> <span class="badge"><span>{{humidityPercentage}} &#37;</span> </span></td><td><!--<span class="badge">80 &#37;</span>--></td></tr>
+                  <td>{{humidityPercentage.name}}</td>
+                  <td> <span class="badge"><span>{{humidityPercentage.percentage}} &#37;</span> </span></td><td><!--<span class="badge">80 &#37;</span>--></td></tr>
                 <tr class="success">
-                  <td>Heat Index</td>
+                  <td>{{heatIndex.name}}</td>
                   <td> <span class="badge"><span ng-show="tempFormat == 'C'">{{heatIndex.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{heatIndex.f}} F&deg;</span> </span></td><td><!--<span class="badge">32 </span>--></td></tr>
                 <tr class="success">
-                  <td>Light <abbr data-popover-title="Device Address" data-popover="{{light.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
+                  <td>{{light.name}} <abbr data-popover-title="Device Address" data-popover="{{light.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
                   <td> <span class="badge">{{light.v}}</span></td> <td></td></tr>
               </tbody>
             </table>
@@ -186,20 +187,19 @@
               <tbody>
                 <!--<tr class="success"><td>Pool Level</td><td><span class="badge">5 m</span></td></tr>-->
                 <tr class="success">
-                  <td>
-                  Temperature1 <abbr data-popover-title="Device Address" data-popover="{{temp1.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
+                  <td>{{temp1.name}} <abbr data-popover-title="Device Address" data-popover="{{temp1.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
                   <td><span class="badge"><span ng-show="tempFormat == 'C'">{{temp1.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temp1.f}} F&deg;</span></span></td></tr>
                 <tr class="success">
-                  <td>Temperature2 <abbr data-popover-title="Device Address" data-popover="{{temp2.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
+                  <td>{{temp2.name}} <abbr data-popover-title="Device Address" data-popover="{{temp2.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
                   <td><span class="badge"><span ng-show="tempFormat == 'C'">{{temp2.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temp2.f}} F&deg;</span></span></td></tr>
                 <tr class="success">
-                  <td>Temperature3 <abbr data-popover-title="Device Address" data-popover="{{temp3.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
+                  <td>{{temp3.name}} <abbr data-popover-title="Device Address" data-popover="{{temp3.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
                   <td><span class="badge"><span ng-show="tempFormat == 'C'">{{temp3.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temp3.f}} F&deg;</span></span></td></tr>
                 <tr class="success">
-                  <td>Temperature4 <abbr data-popover-title="Device Address" data-popover="{{temp4.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
+                  <td>{{temp4.name}} <abbr data-popover-title="Device Address" data-popover="{{temp4.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
                   <td><span class="badge"><span ng-show="tempFormat == 'C'">{{temp4.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temp4.f}} F&deg;</span></span></td></tr>
                 <tr class="success">
-                  <td>Temperature5 <abbr data-popover-title="Device Address" data-popover="{{temp5.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
+                  <td>{{temp5.name}} <abbr data-popover-title="Device Address" data-popover="{{temp5.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
                   <td><span class="badge"><span ng-show="tempFormat == 'C'">{{temp5.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temp5.f}} F&deg;</span></span></td></tr>
                 <!--<tr class="success"><td>Pump Running</td><td><i class="fa fa-cog fa-spin fa-lg green"></i></td></tr>-->
               </tbody>
@@ -348,17 +348,17 @@
                              $scope.loaded = true; //if false shows alternate screen if API fails to refresh
                              $scope.loading; //used to show system backdrop
 
-                             $scope.temperature = { c: 0.0, f: 0.0, address: '' };
-                             $scope.humidityPercentage;
-                             $scope.heatIndex = { c: 0.0, f: 0.0 };
+                             $scope.temperature = { c: 0.0, f: 0.0, address: '', name: '' };
+                             $scope.humidityPercentage = { percentage: '', name: ''};
+                             $scope.heatIndex = { c: 0.0, f: 0.0, name: '' };
 
-                             $scope.light = { v: 0.0, address: '' };
+                             $scope.light = { v: 0.0, address: '', name: '' };
 
-                             $scope.temp1 = { c: 0.0, f: 0.0, address: '' };
-                             $scope.temp2 = { c: 0.0, f: 0.0, address: '' };
-                             $scope.temp3 = { c: 0.0, f: 0.0, address: '' };
-                             $scope.temp4 = { c: 0.0, f: 0.0, address: '' };
-                             $scope.temp5 = { c: 0.0, f: 0.0, address: '' };
+                             $scope.temp1 = { c: 0.0, f: 0.0, address: '', name: '' };
+                             $scope.temp2 = { c: 0.0, f: 0.0, address: '', name: '' };
+                             $scope.temp3 = { c: 0.0, f: 0.0, address: '', name: '' };
+                             $scope.temp4 = { c: 0.0, f: 0.0, address: '', name: '' };
+                             $scope.temp5 = { c: 0.0, f: 0.0, address: '', name: '' };
 
                              $scope.time; //stores moment format of the date on the device
                              $scope.timeLocal;
@@ -369,7 +369,7 @@
 
                              //functions:
                              $scope.load = load;
-                             $scope.heatIndex = heatIndex;
+                             $scope.calcHeatIndex = calcHeatIndex;
 
                              $scope.load();
 
@@ -386,13 +386,23 @@
                                return Math.round(((far - 32) * 0.556) * 100) / 100;
                              }
 
+                            function findName(addr, subaddr){
+
+                                for (var i = 0; i < $scope.Lables.length; i++) {
+                                     if( $scope.Lables[i].address === addr && $scope.Lables[i].subAddress === subaddr)
+                                        return $scope.Lables[i].name;
+                                  }
+
+                                  return "N/A";
+                            }
+
                              //public:
                              /*
                              RHumidity = Relative Humidity in %
                              tempair = air temperature in F
                              */
                              // Heat index computed using air temperature F and RH%                              
-                             function heatIndex(tempair, RHumidity) {
+                             function calcHeatIndex(tempair, RHumidity) {
                                var hi;
                                  if (RHumidity > 100) {
                                    return 'NA'; //Relative humidity cannot exceed 100%
@@ -432,7 +442,7 @@
                                  var rh2 = 1 - RHumidity / 100;
                                  var tdpc2 = tempc2 - (((14.55 + .114 * tempc2) * rh2) + (Math.pow(((2.5 + .007 * tempc2) * rh2), 3)) + ((15.9 + .117 * tempc2)) * (Math.pow(rh2, 14)));
 
-                                 return heatindex;
+                                 return heatindex;                                
 
                              }
 
@@ -448,36 +458,48 @@
   
                                      $scope.timeLocal = moment();
                                      $scope.stopTime = $interval(runningTime, 1000);
+                                     $scope.Lables =  data.data.result.sensorLabels.sensors;
                                      
                                      $scope.temperature.c = data.data.result.sensors.DHT.TempC;
                                      $scope.temperature.f = C2F(data.data.result.sensors.DHT.TempC);
                                      $scope.temperature.address = data.data.result.sensors.DHT.Address;
-                                     $scope.humidityPercentage = data.data.result.sensors.DHT.HumidityPercent;                                     
-                                     $scope.heatIndex.f = heatIndex($scope.temperature.f, $scope.humidityPercentage);
+                                     $scope.temperature.name =  findName($scope.temperature.address, 'Temperature');
+
+                                     $scope.humidityPercentage.percentage = data.data.result.sensors.DHT.HumidityPercent;
+                                     $scope.humidityPercentage.name =  findName($scope.temperature.address, 'Humidity');                                     
+
+                                     $scope.heatIndex.f = calcHeatIndex($scope.temperature.f, $scope.humidityPercentage.percentage);
                                      $scope.heatIndex.c = F2C($scope.heatIndex.f);
+                                     $scope.heatIndex.name =  findName($scope.temperature.address, 'HeatIndex');                                     
 
                                      $scope.light.v = data.data.result.sensors.Light.Light;
                                      $scope.light.address = data.data.result.sensors.Light.Address;
+                                     $scope.light.name =  findName($scope.light.address, null);                                        
 
                                      $scope.temp1.c = data.data.result.sensors.Temperatures[0].TempC;
                                      $scope.temp1.address = data.data.result.sensors.Temperatures[0].Address;
                                      $scope.temp1.f = C2F($scope.temp1.c);
+                                     $scope.temp1.name =  findName($scope.temp1.address, null); 
 
                                      $scope.temp2.c = data.data.result.sensors.Temperatures[1].TempC;
                                      $scope.temp2.address = data.data.result.sensors.Temperatures[1].Address;
                                      $scope.temp2.f = C2F($scope.temp2.c);
+                                     $scope.temp2.name =  findName($scope.temp2.address, null); 
 
                                      $scope.temp3.c = data.data.result.sensors.Temperatures[2].TempC;
                                      $scope.temp3.address = data.data.result.sensors.Temperatures[2].Address;
                                      $scope.temp3.f = C2F($scope.temp3.c);
+                                     $scope.temp3.name =  findName($scope.temp3.address, null); 
 
                                      $scope.temp4.c = data.data.result.sensors.Temperatures[3].TempC;
                                      $scope.temp4.address = data.data.result.sensors.Temperatures[3].Address;
                                      $scope.temp4.f = C2F($scope.temp4.c);
+                                     $scope.temp4.name =  findName($scope.temp4.address, null); 
 
                                      $scope.temp5.c = data.data.result.sensors.Temperatures[4].TempC;
                                      $scope.temp5.address = data.data.result.sensors.Temperatures[4].Address;
                                      $scope.temp5.f = C2F($scope.temp5.c);
+                                     $scope.temp5.name =  findName($scope.temp5.address, null); 
 
                                      $scope.uptime = data.data.result.uptime.alive.uptime;
                                      $scope.util = data.data.result.uptime.loadAverage.min1 + ', ' + 
