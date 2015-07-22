@@ -10,13 +10,13 @@ import datetime
 import libs.config as config
 
 def checkResult(x, name, cmd):
-	if(x == 0):
+	if(x == 0):		
 		print "completed " + name
 	else:
 		r = name + " failed: " + cmd
 		print r
 		logcmd = "python /mnt/sda1/arduino/python/loggerError.py '" + r + "'"
-		x = os.system(logcmd)
+		y = os.system(logcmd)
 
 #progArgs = sys.argv[1]
 #progArgs = progArgs.replace('"', "")

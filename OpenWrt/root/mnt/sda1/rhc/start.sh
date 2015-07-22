@@ -1,2 +1,1 @@
-python /mnt/sda1/arduino/python/loggerInfo.py 'device booted!'  
-# this is not logging....
+( sleep 30 ; python /mnt/sda1/arduino/python/loggerInfo.py 'Device Booted' )&

@@ -9,3 +9,10 @@ python /mnt/sda1/arduino/python/loggerInfo.py "24h scheduled maintenance"
 #following equivalent to reset power button - also not working! :(
 #echo 1 > /proc/sys/kernel/sysrq 
 #echo b > /proc/sysrq-trigger
+#
+#chmod +x /etc/rc.local  and call it from there instead???
+#
+#  Add the following line to the crontab (beneath any existing lines if they are there) to Automatically Reboot Every Week:
+# (0min 3hour anyDay anyMonth 0forSunday reboot=root command. Cronotab runs as admin so it has power to reboot device)
+# 0 3 * * 0 reboot
+#

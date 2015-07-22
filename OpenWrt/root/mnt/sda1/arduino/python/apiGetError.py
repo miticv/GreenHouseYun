@@ -15,6 +15,7 @@ if(len(sys.argv) > 1):
 	startDate = sys.argv[1]
 	startDate = startDate.replace('"', "")
 	startDate = startDate.replace("'", "")
+	startDate = startDate.strip()
 else:
 	startDate = ""
 
@@ -22,9 +23,12 @@ if(len(sys.argv) > 2):
 	endDate = sys.argv[2]
 	endDate = endDate.replace('"', "")
 	endDate = endDate.replace("'", "")
+	endDate = endDate.strip()
 else:
 	endDate = ""
 
+# logType = 0 (Info)
+# logType = 1 (Error)
 
 if(startDate == "" and endDate == ""):
 	sql = "SELECT * FROM log where logType = 1 order by logDate desc"

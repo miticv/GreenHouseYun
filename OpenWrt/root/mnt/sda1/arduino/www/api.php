@@ -1,7 +1,8 @@
 <?php
 
 //shows linux command in header
-$debug = True;
+//$debug = True;
+$debug = False;
 
 main();
 
@@ -43,6 +44,10 @@ function main() {
 
 	    	case "reset_arduino":
 	    		$value = do_arduino_reset();    		
+	    		break;
+
+	    	case "reset_yun":
+	    		$value = do_yun_reset();
 	    		break;
 
 	       default:
@@ -204,5 +209,24 @@ function do_arduino_reset(){
   	return '{"Reboot" : "Completed"}';
 
 }
+
+function do_yun_reset(){
+
+
+	// try run both at the same time: ?
+	//$execStr = 'reset-mcu; /sbin/reboot'; 	
+
+
+	/* do arduino first so it doesnt interfeer with yun reboot: */
+	do_arduino_reset();
+
+	/* now reboot yun itself: */
+	$execStr = '/sbin/reboot';    
+  	if($debug) { header('Debug-value: ' . $execStr); }
+  	exec(trim($execStr), $result); 
+
+  	return '{"Reboot" : "Completed"}';
+}
+
 
 ?>

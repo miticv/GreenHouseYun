@@ -22,7 +22,30 @@ http://cdnjs.cloudflare.com/ajax/libs/angular-busy/4.1.2/angular-busy.min.css
 http://cdnjs.cloudflare.com/ajax/libs/angular-busy/4.1.2/angular-busy.min.js
 http://cdnjs.cloudflare.com/ajax/libs/angular-moment/0.9.0/angular-moment.min.js
 
+
+bootstrap.min.css
+font-awesome.min.css
+animate.min.css
+toaster.min.css
+
+jquery.min.js
+bootstrap.min.js
+toastr.min.js
+moment.min.js
+angular.min.js
+angular-route.min.js
+angular-animate.min.js
+angular-messages.min.js
+Chart.min.js
+bootstrap-datetimepicker.min.css
+bootstrap-datetimepicker.min.js
+angular-busy.min.css
+angular-busy.min.js
+angular-moment.min.js
+
 FALLBACK:
+/main.py /static.html
+# static.html will be served if main.py is inaccessible
 
 NETWORK:
 *

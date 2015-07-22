@@ -67,6 +67,9 @@ Process p;
  
 void setup() {
 // Bridge startup: 
+  // do nothing for 10 seconds (do not interupt booting process):
+  delay(10000); 
+
   pinMode(13,OUTPUT);
   digitalWrite(13, LOW);
 
@@ -80,7 +83,7 @@ void setup() {
   //asks for credentials:
   server.noListenOnLocalhost(); 
   //does not ask for credentials:
-  //server.listenOnLocalhost(); ??
+  //server.listenOnLocalhost();
   
   server.begin();
   
@@ -98,13 +101,6 @@ void loop() {
     // read the command
 	String command = client.readString();
     command.trim();        //kill whitespace
-	//if (command.indexOf(" HTTP/1.1") > -1)
-	//{
-	//	command = command.substring(0, command.indexOf(" HTTP/1.1"));
-	//}
-	//client.print("command is: '");
-	//client.print(command);
-	//client.println("'");
 
 	clientSendJSON();
 
@@ -120,9 +116,6 @@ void loop() {
 	else if (command == "err") {
 		ShowLastError();
 	}
-	//else if (command == "data" || command.indexOf("GET /data") > -1 || command == "") {
-	//	ReadData();
-	//}
 	else{
 		ReadData();
 	}
@@ -136,21 +129,6 @@ void loop() {
        
 }
 
-
-//void ShowCommands(String command){
-//
-//	client.print("{\"Invalid command\":\"");
-//	client.print(command);
-//	client.print("\",");
-//	client.print("\"temp\":\"List temperature and humidity\",");
-//	client.print("\"temps\":\"List temperatures\",");
-//	client.print("\"light\":\"Measure light\",");
-//	client.print("\"data\":\"Show sensor data\",");
-//	client.print("\"err\":\"Show last error\",");
-//	client.print("}");
-//}
-
-
 void ReadData(){
 	client.print("{ \"Light\": ");
 	ReadLight();
@@ -160,7 +138,6 @@ void ReadData(){
 	ReadTemps();
 	client.print("}");
 }
-
 
 void ReadLight(){
 
@@ -266,30 +243,6 @@ void SensorsSetUp(){
 
 
 }
-
-//void printShellCommand(char* str){
-//	p.runShellCommand(str);
-//	while (p.running());
-//
-//	while (p.available()>0) {
-//		temp = (char)p.read();
-//		if (temp != '\n') client.print(temp);
-//	}
-//
-//}
-//
-//bool isCommandFromYUN(String *command){
-//	client.print("isCommandFromYUN:");
-//	client.println((*command).indexOf("127.0.0.1:5555"));
-//	return (*command).indexOf("127.0.0.1:5555") > -1;
-//}
-//
-//bool isYunDataArgument(String *command){
-//	client.print("isYunDataArgument:");
-//	client.println((*command).indexOf("127.0.0.1:5555"));
-//	return (*command).indexOf("GET /data HTTP/") > -1;	
-//}
-
 
 void printAddress(uint8_t* address){
 

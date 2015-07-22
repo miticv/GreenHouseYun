@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html> 
+<!--<html manifest="cache.app1"> -->
+<head>
+  <title>Green House</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" href="/favicon.ico">
+    
+  <!-- bower:css -->
+  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css" />
+  <link rel="stylesheet" href="/bower_components/toastr/toastr.css" />
+  <link rel="stylesheet" href="/bower_components/angular-chart.js/dist/angular-chart.css" />
+  <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.css" />
+  <link rel="stylesheet" href="/bower_components/angular-busy/dist/angular-busy.css" />
+  <link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+  <!-- endbower -->  
+  
+  <!-- inject:css -->
+  <link rel="stylesheet" href="/.tmp/styles.css">
+  <!-- endinject -->
+</head>
+<body>
+
+  <div>
+
+    <div data-ng-include="'/src/client/app/views/header.html'"></div>
+
+    <div class="container body-content ui-view-container" role="main" style="margin-bottom:50px;">
+      <div ng-view data-ng-view-animate="zoomIn"></div>
+    </div>
+
+  </div>
+    
+  <!-- bower:js -->
+  <script src="/bower_components/jquery/dist/jquery.js"></script>
+  <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+  <script src="/bower_components/toastr/toastr.js"></script>
+  <script src="/bower_components/moment/moment.js"></script>
+  <script src="/bower_components/angular/angular.js"></script>
+  <script src="/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+  <script src="/bower_components/angular-route/angular-route.js"></script>
+  <script src="/bower_components/angular-animate/angular-animate.js"></script>
+  <script src="/bower_components/angular-messages/angular-messages.js"></script>
+  <script src="/bower_components/angular-sanitize/angular-sanitize.js"></script>
+  <script src="/bower_components/angular-moment/angular-moment.js"></script>
+  <script src="/bower_components/Chart.js/Chart.js"></script>
+  <script src="/bower_components/angular-chart.js/dist/angular-chart.js"></script>
+  <script src="/bower_components/angular-busy/dist/angular-busy.js"></script>
+  <script src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+  <!--<script src="/bower_components/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js"></script>-->
+  <!-- endbower -->
+
+    
+  <!-- inject:js -->
+    <script src="/src/client/app/scripts/routing.js"></script>
+  <script src="/src/client/app/scripts/directives.js"></script>
+  <script src="/src/client/app/scripts/homeController.js"></script>
+  
+  <script src="/src/client/app/scripts/service.js"></script>
+  <!-- endinject -->
+
+  <script id="startup">
+    $(document).ready(function () {
+      angular.bootstrap(document, ['greenhouse']);
+    });
+  </script>
+</body>
+</html>
