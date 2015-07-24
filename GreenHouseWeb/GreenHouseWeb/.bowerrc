@@ -1,0 +1,8 @@
+{
+  "directory": "src/client/bower_components",
+  "scripts": {
+    "postinstall": "gulp wiredep"
+  },
+   "registry": "http://bower.herokuapp.com",
+  "strict-ssl": false
+}
