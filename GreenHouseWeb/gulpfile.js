@@ -131,11 +131,13 @@ gulp.task('inject', ['wiredep', 'styles', 'templatecache'], function () {
         .pipe(gulp.dest(config.client));
 });
 
-gulp.task('optimize', ['inject'], function () {
+gulp.task('optimize', ['inject', 'fonts', 'images'], function () {
     log('Optimizing the JS, CSS and HTML');
 
     var templateCache = config.temp + config.templateCache.file;
-    var assets = $.useref.assets({searchPath: './'});
+    var assets = $.useref.assets({ searchPath: './' });
+    var cssFilter = $.filter(['**/*.css'], { restore: true });
+    var jsFilter = $.filter(['**/*.js'], { restore: true });
 
     return gulp
         .src(config.index)
@@ -144,6 +146,12 @@ gulp.task('optimize', ['inject'], function () {
             starttag: '<!-- inject:template.js -->'
             }))
         .pipe(assets)
+        .pipe(cssFilter)//filter down to css
+        .pipe($.csso())
+        .pipe(cssFilter.restore)//restore
+        .pipe(jsFilter)//filter down to js
+        .pipe($.uglify())
+        .pipe(jsFilter.restore)//restore
         .pipe(assets.restore())
         .pipe($.useref())
         .pipe(gulp.dest(config.build));

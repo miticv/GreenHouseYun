@@ -78,8 +78,11 @@ gulp angular template cache
 npm install --save-dev gulp-minify-html gulp-angular-templatecache
 ```
 
+
 ```bash
 npm install --save-dev gulp-useref
 ```
 
-
+```bash
+npm install --save-dev gulp-csso gulp-uglify gulp-filter
+```
