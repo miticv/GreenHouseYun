@@ -74,3 +74,12 @@ npm install --save-dev gulp-task-listing gulp-imagemin
 ```
 
 gulp angular template cache
+```bash
+npm install --save-dev gulp-minify-html gulp-angular-templatecache
+```
+
+```bash
+npm install --save-dev gulp-useref
+```
+
+

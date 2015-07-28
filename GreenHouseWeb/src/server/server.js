@@ -32,8 +32,8 @@ app.all('*', function (req, res, next) {
 switch (environment) {
     case 'build':
         console.log('*** BUILD ***');
-        app.use(express.static(__dirname + '/../../build'));
         app.use('/index.html', express.static(__dirname + '/../../build/index.html'));
+        app.use(express.static(__dirname + '/../../build'));
         app.get('/sd/api.php', function (req, res) {
             res.set('Content-Type', 'application/json');
             res.json(apiJson);
@@ -42,8 +42,10 @@ switch (environment) {
         break;
     case 'dev':
         console.log('*** DEV ***');
-        //****************static resources
         app.use('/index.html', express.static(__dirname + '/../client/index.html'));
+        app.use('/temp', express.static(__dirname + '/../../temp'));
+        app.use('/bower_components', express.static(__dirname + '/../../bower_components'));
+        app.use('/src/client/app', express.static(__dirname + '/../client/app'));
         app.use(express.static(__dirname + '/../client'));
         app.get('/sd/api.php', function (req, res) {
             res.set('Content-Type', 'application/json');

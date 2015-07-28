@@ -2,8 +2,8 @@ module.exports = function () {
     var client = './src/client/';
     var server = './src/server/';
     var clientApp = 'app/';
-    var styles = 'styles/';
-    var bowerComponents = client + 'bower_components/';
+    var temp = './temp/';
+    var bowerComponents = 'bower_components/';
 
     var config = {
         /**
@@ -14,10 +14,12 @@ module.exports = function () {
             './*.js',
             '!' + bowerComponents + '/**/*.*'
         ],
+        temp: temp,
         build: './build/',
         client: client,
-        css: styles + 'styles.css',
+        css: temp + 'styles.css',
         fonts: bowerComponents + 'font-awesome/fonts/**/*.*',
+        htmltemplates: client + '**/*.html',
         images: client + 'images/**/*.*',
         index: client + 'index.html',
         js: [
@@ -26,7 +28,20 @@ module.exports = function () {
         ],
         less: [client + 'less/styles.less'],
         server: server,
-        styles: client + styles,
+        styles: temp,
+
+        /***
+         * template cache
+         */
+        templateCache: {
+            file: 'templates.js',
+            options: {
+                module: 'greenhouse',
+                standAlone: false,
+                root: ''
+            }
+        },
+
         /**
         *  Bower and NPM locations
         */
@@ -45,7 +60,7 @@ module.exports = function () {
 
     config.getInjectOptions = function () {
         var options = {
-            ignorePath: '/src/client/'
+            //ignorePath: '/src/client/'
         };
 
         return options;
