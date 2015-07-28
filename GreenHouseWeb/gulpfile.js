@@ -137,7 +137,9 @@ gulp.task('optimize', ['inject', 'fonts', 'images'], function () {
     var templateCache = config.temp + config.templateCache.file;
     var assets = $.useref.assets({ searchPath: './' });
     var cssFilter = $.filter(['**/*.css'], { restore: true });
-    var jsFilter = $.filter(['**/*.js'], { restore: true });
+    //var jsFilter = $.filter(['**/*.js'], { restore: true });
+    var jsAppFilter = $.filter(['**/' + config.optimized.app], { restore: true });
+    var jsLibFilter = $.filter(['**/' + config.optimized.lib], { restore: true });
 
     return gulp
         .src(config.index)
@@ -149,12 +151,49 @@ gulp.task('optimize', ['inject', 'fonts', 'images'], function () {
         .pipe(cssFilter)//filter down to css
         .pipe($.csso())
         .pipe(cssFilter.restore)//restore
-        .pipe(jsFilter)//filter down to js
+        .pipe(jsAppFilter)//filter down to js
+        .pipe($.ngAnnotate()) //{add:true}
         .pipe($.uglify())
-        .pipe(jsFilter.restore)//restore
+        .pipe(jsAppFilter.restore)//restore
+        .pipe(jsLibFilter)//filter down to js
+        .pipe($.uglify())
+        .pipe(jsLibFilter.restore)//restore
+        .pipe($.rev())  //add revision
         .pipe(assets.restore())
         .pipe($.useref())
+        .pipe($.revReplace())//fix revision links in html
+        .pipe(gulp.dest(config.build))
+        .pipe($.rev.manifest())
         .pipe(gulp.dest(config.build));
+});
+
+/***
+ * Bump the version:
+ * --type=pre    will pump the prerelease version *.*.*-a
+ * --type=patch  or no flag will bump patch version *.*.x
+ * --type=minor  will bump minor version *.x.*
+ * --type=major  will bump major version x.*.*
+ * --version=1.2.3 (bump to specific version and ignore other flags)
+ *
+ */
+gulp.task('bump', function () {
+    var msg = 'Bumping versions';
+    var type = args.type;
+    var version = args.version;
+    var options = {};
+    if (version) {
+        options.version = version;
+        msg += ' to ' + type
+    } else {
+        options.type = type;
+        msg += ' for a ' + version
+    }
+    log(msg);
+    return gulp
+        .src(config.packages)
+        .pipe($.print())
+        .pipe($.bump(options))
+        .pipe(gulp.dest(config.root));
 });
 
 gulp.task('serve-build', ['optimize'], function () {

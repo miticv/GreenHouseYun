@@ -76,13 +76,41 @@ npm install --save-dev gulp-task-listing gulp-imagemin
 gulp angular template cache
 ```bash
 npm install --save-dev gulp-minify-html gulp-angular-templatecache
-```
 
-
-```bash
 npm install --save-dev gulp-useref
+
+npm install --save-dev gulp-csso gulp-uglify gulp-filter
 ```
 
+# Angular automated anotation 
+
+Finds code and adds annotation:
 ```bash
-npm install --save-dev gulp-csso gulp-uglify gulp-filter
+npm install --save-dev gulp-ng-annotate
+```
+now we can just write: 
+```bash
+  controller('homeController', function ($scope, greenApiService, NotifierService, $q, $interval) 
+```
+instead of:
+```bash
+  controller('homeController', ['$scope', 'greenApiService', 'NotifierService', '$q', '$interval',
+                       function ($scope, greenApiService, NotifierService, $q, $interval) 
+```
+or:
+```bash
+  controller('homeController', homeController);
+ function homeController($scope, greenApiService, NotifierService, $q, $interval) 
+```
+instead of:
+```bash
+  controller('homeController', homeController);
+  homeController.$inject ['$scope', 'greenApiService', 'NotifierService', '$q', '$interval'];
+  function  homeController($scope, greenApiService, NotifierService, $q, $interval) 
+```
+
+# revisions
+
+```bash
+npm install --save-dev gulp-rev gulp-rev-replace gulp-bump
 ```

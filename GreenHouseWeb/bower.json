@@ -1,6 +1,6 @@
 {
   "name": "GreenHouse-Gulp",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "GreenHouse website for Automation with Gulp",
   "authors": [
     "Vladimir Mitic"
@@ -35,4 +35,4 @@
     "angular-busy": "4.1.2",
     "eonasdan-bootstrap-datetimepicker": "4.0.0"
   }
-  }
+}

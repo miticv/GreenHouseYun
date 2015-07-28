@@ -1,6 +1,6 @@
 {
   "name": "GreenHouse-Gulp",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "GreenHouse website for Automation with Gulp",
   "authors": [
     "Vladimir Mitic"
@@ -29,6 +29,7 @@
     "gulp": "^3.9.0",
     "gulp-angular-templatecache": "^1.7.0",
     "gulp-autoprefixer": "^2.3.1",
+    "gulp-bump": "^0.3.1",
     "gulp-csso": "^1.0.0",
     "gulp-filter": "^3.0.0",
     "gulp-if": "^1.2.5",
@@ -39,9 +40,12 @@
     "gulp-less": "^3.0.3",
     "gulp-load-plugins": "^0.10.0",
     "gulp-minify-html": "^1.0.4",
+    "gulp-ng-annotate": "^1.1.0",
     "gulp-nodemon": "^2.0.3",
     "gulp-plumber": "^1.0.1",
     "gulp-print": "^1.1.0",
+    "gulp-rev": "^5.1.0",
+    "gulp-rev-replace": "^0.4.2",
     "gulp-task-listing": "^1.0.1",
     "gulp-uglify": "^1.2.0",
     "gulp-useref": "^1.2.0",
