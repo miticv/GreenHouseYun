@@ -73,11 +73,35 @@ gulp.task('images', ['clean-images'], function () {
         .pipe(gulp.dest(config.build + 'images'));
 });
 
+gulp.task('clean-code', function (done) {
+    'use strict';
+    var files = [].concat(
+        config.styles + '**/*.css',
+        config.build + '**/*.html',
+        config.build + 'js/**/*.js'
+    );
+    clean(files, done);
+});
+
 gulp.task('less-watcher', function () {
     'use strict';
     gulp.watch([config.less], ['styles']);
 
 });
+
+gulp.task('templatecache', ['clean-code'], function (done) {
+    'use strict';
+    log('Createing AngularJS  $templateCache');
+    return gulp
+        .src(config.htmltemplates)
+        .pipe($.minifyHtml({ empty: true }))
+        .pipe($.angularTemplatecache( //gulp-angular-Templatecache
+            config.templateCache.file,
+            config.templateCache.options
+            ))
+        .pipe(gulp.dest(config.temp));
+});
+
 
 gulp.task('wiredep', function () {
     'use strict';
@@ -97,7 +121,7 @@ bower install package will kick:
 run gulp wiredep (and add it to our html)
 (We excluded styles from here since they might take long since less and autoprefixes compilation might take a while)
 */
-gulp.task('inject', ['wiredep', 'styles'], function () {
+gulp.task('inject', ['wiredep', 'styles', 'templatecache'], function () {
     'use strict';
     log('Inject our app css => into html (call wiredep and styles first) ');
 
@@ -107,9 +131,36 @@ gulp.task('inject', ['wiredep', 'styles'], function () {
         .pipe(gulp.dest(config.client));
 });
 
+gulp.task('optimize', ['inject'], function () {
+    log('Optimizing the JS, CSS and HTML');
+
+    var templateCache = config.temp + config.templateCache.file;
+    var assets = $.useref.assets({searchPath: './'});
+
+    return gulp
+        .src(config.index)
+        .pipe($.plumber())
+        .pipe($.inject(gulp.src(templateCache, { read: false }), {
+            starttag: '<!-- inject:template.js -->'
+            }))
+        .pipe(assets)
+        .pipe(assets.restore())
+        .pipe($.useref())
+        .pipe(gulp.dest(config.build));
+});
+
+gulp.task('serve-build', ['optimize'], function () {
+    'use strict';
+    serve(false);
+});
+
+
 gulp.task('serve-dev', ['inject'], function () {
     'use strict';
-    var isDev = true;
+    serve(true);
+});
+
+function serve(isDev) {
     var nodeOptions = {
         script: config.nodeServer,
         delayTime: 1,
@@ -121,19 +172,21 @@ gulp.task('serve-dev', ['inject'], function () {
     };
     return $.nodemon(nodeOptions)
         .on('restart', function (ev) {
-            log('*** nodemon re-started');
-            log('files changed on restart\n' + ev);
-        })
+        log('*** nodemon re-started');
+        log('files changed on restart\n' + ev);
+    })
         .on('start', function () {
-            log('*** nodemon started');
-        })
+        log('*** nodemon started');
+    })
         .on('crash', function () {
-            log('*** nodemon crashed: script crashed for some reason');
-        })
+        log('*** nodemon crashed: script crashed for some reason');
+    })
         .on('exit', function () {
-            log('*** nodemon exited cleanly');
-        });
-});
+        log('*** nodemon exited cleanly');
+    });
+
+}
+
 
 ////////////////////
 //function errorLogger(error) {
