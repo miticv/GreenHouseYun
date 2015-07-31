@@ -114,3 +114,12 @@ instead of:
 ```bash
 npm install --save-dev gulp-rev gulp-rev-replace gulp-bump
 ```
+
+# testing with karma
+
+```bash
+npm install --save-dev mocha chai sinon
+npm install --save-dev karma karma-chai karma-chai-sinon karma-chrome-launcher karma-coverage karma-growl-reporter karma-mocha karma-phantomjs-launcher karma-sinon mocha-clean sinon-chai phantomjs
+npm install --save-dev karma-ie-launcher
+```
+npm WARN deprecated mocha-clean@0.4.0: Mocha 2.2.5 already shortens stack traces by default.

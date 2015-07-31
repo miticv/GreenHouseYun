@@ -50,10 +50,13 @@ module.exports = function(config) {
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
         //        browsers: ['Chrome', 'ChromeCanary', 'FirefoxAurora', 'Safari', 'PhantomJS'],
-        browsers: ['PhantomJS'],
+        browsers: ['PhantomJS'], //, 'Chrome', 'Firefox', 'IE'
 
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits
-        singleRun: false
+        singleRun: false,
+
+        //timeout in ms
+        captureTimeout: 60000
     });
 };

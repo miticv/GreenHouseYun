@@ -33,6 +33,8 @@
     <Compile Include="gulp.config.js" />
     <Compile Include="gulpfile.js" />
     <Compile Include="karma.conf.js" />
+    <Compile Include="src\client\tests\sinonTests.js" />
+    <Compile Include="src\client\tests\test.js" />
     <Compile Include="temp\templates.js" />
     <Content Include="build\index.html" />
     <Content Include="LICENSE">
@@ -72,6 +74,7 @@
     <Folder Include="src\client\images\" />
     <Folder Include="src\client\less\" />
     <Folder Include="src\client\styles\" />
+    <Folder Include="src\client\tests\" />
     <Folder Include="src\server\" />
     <Folder Include="src\server\data\" />
     <Folder Include="src\server\controllers\" />

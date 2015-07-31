@@ -207,6 +207,13 @@ gulp.task('serve-dev', ['inject'], function () {
     serve(true);
 });
 
+
+gulp.task('test', ['vet', 'templatecache'], function () {
+    startTests(true /* single run */, done);
+
+})
+
+////////////////////
 function serve(isDev) {
     var nodeOptions = {
         script: config.nodeServer,
@@ -234,8 +241,6 @@ function serve(isDev) {
 
 }
 
-
-////////////////////
 //function errorLogger(error) {
 //    log('*** Start of Error ***');
 //    log(error);
@@ -260,4 +265,29 @@ function log(msg) {
     } else {
         $.util.log($.util.colors.blue(msg));
     }
+}
+
+function startTests(singleRun, done){
+    var karma = require('karma');
+    var excludeFiles = [];
+    var serverSpecs = config.serverIntegrationSpecs;
+    excludeFiles = serverSpecs;
+
+    karma.start({
+        config: __dirname + 'karma.conf.js',
+        exclude: excludeFiles,
+        singleRun: !!singleRun //convert to bool
+    }, karmaCompleted);
+
+    function karmaCompleted(karmaResult){
+        log('Karma Completed');
+
+        if (karmaResult == 1) {
+            done();
+        } else {
+            done('karma: test failed with code: ' + karmaResult);
+        }
+
+    }
+
 }

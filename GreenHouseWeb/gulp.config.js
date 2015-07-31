@@ -1,10 +1,13 @@
 module.exports = function () {
     var client = './src/client/';
     var server = './src/server/';
+    var report = './report/';
     var clientApp = 'app/';
     var temp = './temp/';
     var root = './';
     var bowerComponents = 'bower_components/';
+    var wiredep = require('wiredep');
+    var bowerFiles = wiredep({devDependencies: true})['js'];
 
     var config = {
         /**
@@ -29,6 +32,7 @@ module.exports = function () {
         ],
         less: [client + 'less/styles.less'],
         server: server,
+        report: report,
         root: root,
         styles: temp,
         /***
@@ -38,6 +42,12 @@ module.exports = function () {
             app: 'app.js',
             lib: 'lib.js'
         },
+
+        /***
+         * karma settings
+         */
+        specHelpers: [client + 'test-helpers.*.js'],
+        serverIntegrationSpecs: [client + 'tests/server-integration/**/*.spec.js'],
 
         /***
          * template cache
@@ -89,5 +99,36 @@ module.exports = function () {
         return options;
     };
 
+    config.karma = getKarmaOptions();
+
     return config;
 };
+
+
+/////
+function getKarmaOptions() {
+    var options = {
+        files: [].concat(
+            bowerFiles,
+            config.specHelpers,
+            client + '**/*.module.js',
+            client + '**/*.js',
+            temp + config.templateCache.file,
+            config.serverIntegrationSpecs
+        ),
+        exclude: [],
+        coverage: {
+            dir: report + 'coverage',
+            reporters: [
+                { type: 'html', subdir: 'report-html' },
+                { type: 'text-summary' },
+            ]
+        },
+        preprocessors: {}
+    };
+
+    options.preprocesors[clientApp + '**/!(*.spec)+(.js)'] = ['coverage'];
+
+    return options;
+
+}
