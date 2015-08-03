@@ -33,6 +33,7 @@
     <Compile Include="gulp.config.js" />
     <Compile Include="gulpfile.js" />
     <Compile Include="karma.conf.js" />
+    <Compile Include="src\client\app\scripts\historyController.js" />
     <Compile Include="src\client\tests\sinonTests.js" />
     <Compile Include="src\client\tests\test.js" />
     <Compile Include="temp\templates.js" />
@@ -58,6 +59,7 @@
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Content Include="src\client\app\views\header.html" />
+    <Content Include="src\client\app\views\history.html" />
     <Content Include="src\client\app\views\home.html" />
     <Content Include="src\client\index.html" />
     <Content Include="src\client\less\styles.less" />

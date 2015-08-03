@@ -1,0 +1,28 @@
+﻿
+
+<div cg-busy="loading">
+    <div ng-show="loaded">
+        <div class="row">
+            <div class="col-sm-6">
+                Prev month, next month, year
+                <br /> Start end date calendar
+                <br /> frequency (60min or 10min)
+                <br /> checkboxes with all sensors
+                <br /> Show all same type sensors
+
+            </div>
+        </div>
+        <div class="row">
+            <canvas id="line" class="chart chart-line"
+                    data="data"
+                    labels="labels"
+                    legend="true"
+                    series="series"></canvas>
+        </div><!--/row-->
+    </div><!--/loaded-->
+</div><!--/loading-->
+<div ng-hide="loaded">
+    <div class="col-sm-12">
+        Could not load data. Please <a href="" ng-click="load()">refresh</a>
+    </div>
+</div>

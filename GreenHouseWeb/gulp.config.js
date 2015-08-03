@@ -99,36 +99,40 @@ module.exports = function () {
         return options;
     };
 
-    config.karma = getKarmaOptions();
+    //config.karma = getKarmaOptions();
 
     return config;
+
+    /////
+    //function getKarmaOptions() {
+    //    var options = {
+    //        files: [].concat(
+    //            bowerFiles,
+    //        config.specHelpers,
+    //        client + '**/*.module.js',
+    //        client + '**/*.js',
+    //        temp + config.templateCache.file,
+    //        config.serverIntegrationSpecs
+    //        ),
+    //        exclude: [],
+    //        coverage: {
+    //            dir: report + 'coverage',
+    //            reporters: [
+    //                { type: 'html', subdir: 'report-html' },
+    //                { type: 'text-summary' },
+    //            ]
+    //        },
+    //        preprocessors: {}
+    //    };
+
+    //    options.preprocesors[clientApp + '**/!(*.spec)+(.js)'] = ['coverage'];
+
+    //    return options;
+
+    //}
+
+
 };
 
 
-/////
-function getKarmaOptions() {
-    var options = {
-        files: [].concat(
-            bowerFiles,
-            config.specHelpers,
-            client + '**/*.module.js',
-            client + '**/*.js',
-            temp + config.templateCache.file,
-            config.serverIntegrationSpecs
-        ),
-        exclude: [],
-        coverage: {
-            dir: report + 'coverage',
-            reporters: [
-                { type: 'html', subdir: 'report-html' },
-                { type: 'text-summary' },
-            ]
-        },
-        preprocessors: {}
-    };
 
-    options.preprocesors[clientApp + '**/!(*.spec)+(.js)'] = ['coverage'];
-
-    return options;
-
-}
