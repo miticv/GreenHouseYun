@@ -222,7 +222,7 @@ function serve(isDev) {
             'PORT': port,
             'NODE_ENV': isDev ? 'dev' : 'build'
         },
-        watch: [config.server]
+        watch: [config.server, config.client]
     };
     return $.nodemon(nodeOptions)
         .on('restart', function (ev) {

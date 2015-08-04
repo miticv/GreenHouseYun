@@ -3,13 +3,61 @@
 <div cg-busy="loading">
     <div ng-show="loaded">
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-4">
+                <form class="form">
+                    <div class="form-group">
+                        <label for="startDate">Start Date</label>
+                        <span class="dropdown">
+                            <a class="dropdown-toggle" id="dropdownstart" role="button" data-toggle="dropdown" data-target="#" href="#">{{ sDate | date:'yyyy-MM-dd hh:mm:ss'}}</a>
+                            <ul class="dropdown-menu" role="menu">
+                                <datetimepicker data-ng-model="sDate" data-datetimepicker-config="{ dropdownSelector: '#dropdownstart' }" />
+                            </ul>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label for="startDate">End Date</label>
+                        <span class="dropdown">
+                            <a class="dropdown-toggle" id="dropdownend" role="button" data-toggle="dropdown" data-target="#" href="#">{{ eDate | date:'yyyy-MM-dd hh:mm:ss'}}</a>
+                            <ul class="dropdown-menu" role="menu">
+                                <datetimepicker data-ng-model="eDate" data-datetimepicker-config="{ dropdownSelector: '#dropdownend' }" />
+                            </ul>
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label for="startDate">Frequency</label>
+                        <span class="dropdown">
+                            <select ng-model="freq">
+                                <option value="60min">1 h</option>
+                                <option value="10min">10 min</option>
+                            </select>
+                        </span>
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-inline">
+                    <span ng-repeat="sensor in sensors">
+                        <label class="checkbox" for="{{sensor.name}}">
+                            <input type="checkbox" checklist-model="sensorsSelected" checklist-value="sensor.name" name="group" id="{{sensor.id}}" />
+                            {{sensor.name}}
+                        </label>
+                    </span>
+                </div>
+
+            </div>
+            <div class="col-sm-4">
+                <br />
                 Prev month, next month, year
                 <br /> Start end date calendar
                 <br /> frequency (60min or 10min)
                 <br /> checkboxes with all sensors
                 <br /> Show all same type sensors
 
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <button ng-click="load()" type="submit" class="btn btn-info center-block">Draw!</button>
             </div>
         </div>
         <div class="row">

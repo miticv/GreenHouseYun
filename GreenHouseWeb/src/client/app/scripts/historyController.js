@@ -1,15 +1,28 @@
 ﻿/* jshint -W101 */
 
 angular.module('greenhouse').
-  controller('historyController', ['$scope', 'greenApiService', 'NotifierService', '$q', '$interval',
-    function ($scope, greenApiService, NotifierService, $q, $interval) {
+  controller('historyController', ['$scope', 'greenApiService', 'NotifierService', '$q', '$interval', 'sensors',
+    function ($scope, greenApiService, NotifierService, $q, $interval, sensors) {
 
         $scope.loaded = true; //if false shows alternate screen if API fails to refresh
 
         //functions:
         $scope.load = load;
 
-        $scope.load();
+        $scope.sDate = new Date();
+        $scope.eDate = new Date();
+
+        $scope.startDate = moment().format('YYYY-MM-DD HH:mm:ss');
+        $scope.endDate = moment().day(-7).format('YYYY-MM-DD HH:mm:ss'); //use past 7 days
+        $scope.freq = "60min"; //10min
+
+        $scope.sensors = sensors.data.result.sensors;
+        $scope.sensorsAvailable = [];
+        for (var i = 0; i < $scope.sensors.length; i++) {
+            $scope.sensorsAvailable.push($scope.sensors[i].name);
+        }
+
+        $scope.sensorsSelected = [];
 
         $scope.labels = []; //X - time spans
         $scope.series = []; //Y - each sensor
@@ -27,32 +40,37 @@ angular.module('greenhouse').
             //    [28, 48, 40, 19, 86, 27, 90]
             //];
             //#endregion
+            var sensorsToShow = $scope.sensorsSelected;
 
-            var sensorsToShow = [
-                "Temp1",
-                "Temp2",
-                "Temp3",
-                "Temp4",
-                "Temp5",
-                "Temp"//,
-                //"Humidity",
-                //"Heat Index"//,
-                //"Light"
-            ];
+            //var sensorsToShow = [
+            //    "Temp1",
+            //    "Temp2",
+            //    "Temp3",
+            //    "Temp4",
+            //    "Temp5",
+            //    "Temp"//,
+            //    //"Humidity",
+            //    //"Heat Index"//,
+            //    //"Light"
+            //];
 
 
             //local variable to collect X labels
             var labels = [];
+            $scope.series = [];
+            $scope.labels = [];
 
             for (var i = 0; i < result.length; i++) {
                 item = result[i];
 
                 //get time spans (X):
+
                 if (labels.indexOf(item.logDate) < 0) {
                     labels.push(item.logDate);
                     $scope.labels.push(moment.unix(item.logDate).format("MMMM D HH:mm"));
                 }
                 //get all sensors (how many graphs):
+
                 if ($scope.series.indexOf(item.sensorName) < 0) {
                     if (sensorsToShow.indexOf(item.sensorName) > -1) {
                         $scope.series.push(item.sensorName);
@@ -77,13 +95,16 @@ angular.module('greenhouse').
 
         }
 
+        //$scope.load();
 
         //public:
         function load() {
         $scope.loaded = true;
 
+        $scope.startDate = moment($scope.sDate).format('YYYY-MM-DD HH:mm:ss');
+        $scope.endDate = moment($scope.eDate).format('YYYY-MM-DD HH:mm:ss');
 
-        $scope.loading = greenApiService.getSensorData().then(
+        $scope.loading = greenApiService.getSensorData($scope.startDate, $scope.endDate, $scope.freq).then(
                 function success(data) {
 
                     createGraphData(data.data.result);

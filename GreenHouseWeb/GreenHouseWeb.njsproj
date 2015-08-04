@@ -63,8 +63,10 @@
     <Content Include="src\client\app\views\home.html" />
     <Content Include="src\client\index.html" />
     <Content Include="src\client\less\styles.less" />
+    <Content Include="src\server\favicon.ico" />
     <Content Include="src\server\views\index.vash" />
     <Content Include="src\server\views\layout.vash" />
+    <Content Include="temp\styles.css" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="build\" />

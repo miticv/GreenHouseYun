@@ -31,13 +31,13 @@ else:
 # jobId = 6 (1 hour logs)
 
 if(startDate == "" and endDate == ""):
-	sql = "SELECT * FROM dailyLog where jobId = 5 order by logDate desc"
+	sql = "SELECT * FROM dailyLog where jobId = 5 order by logDate asc"
 
 elif(startDate != "" and endDate == ""):
-	sql = "SELECT * FROM dailyLog where jobId = 5 and logDate > '" + startDate + "' order by logDate desc"
+	sql = "SELECT * FROM dailyLog where jobId = 5 and logDate > '" + startDate + "' order by logDate asc"
 
 else: # if(endDate != ""):
-	sql = "SELECT * FROM dailyLog where jobId = 5 and logDate > '" + startDate + "' and logDate < '" + endDate + "'  order by logDate desc"
+	sql = "SELECT * FROM dailyLog where jobId = 5 and logDate > '" + startDate + "' and logDate < '" + endDate + "'  order by logDate asc"
 
 
 lib = dbjson.dbJson()
