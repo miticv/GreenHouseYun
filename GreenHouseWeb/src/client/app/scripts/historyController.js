@@ -7,7 +7,7 @@ angular.module('greenhouse').
         $scope.loaded = true; //if false shows alternate screen if API fails to refresh
 
         //functions:
-        $scope.load = load;
+        $scope.DrawGraph = DrawGraph;
 
         $scope.sDate = new Date();
         $scope.eDate = new Date();
@@ -30,7 +30,7 @@ angular.module('greenhouse').
 
 
         //private:
-        function createGraphData(result){
+        function prepareGraphData(result){
 
             //#region demo
             //$scope.labels = ["LogDate1", "LogDate2", "LogDate3", "LogDate4", "LogDate5", "LogDate6", "LogDate7"];
@@ -41,19 +41,6 @@ angular.module('greenhouse').
             //];
             //#endregion
             var sensorsToShow = $scope.sensorsSelected;
-
-            //var sensorsToShow = [
-            //    "Temp1",
-            //    "Temp2",
-            //    "Temp3",
-            //    "Temp4",
-            //    "Temp5",
-            //    "Temp"//,
-            //    //"Humidity",
-            //    //"Heat Index"//,
-            //    //"Light"
-            //];
-
 
             //local variable to collect X labels
             var labels = [];
@@ -95,10 +82,8 @@ angular.module('greenhouse').
 
         }
 
-        //$scope.load();
-
         //public:
-        function load() {
+        function DrawGraph() {
         $scope.loaded = true;
 
         $scope.startDate = moment($scope.sDate).format('YYYY-MM-DD HH:mm:ss');
@@ -107,7 +92,7 @@ angular.module('greenhouse').
         $scope.loading = greenApiService.getSensorData($scope.startDate, $scope.endDate, $scope.freq).then(
                 function success(data) {
 
-                    createGraphData(data.data.result);
+                    prepareGraphData(data.data.result);
 
 
             },
