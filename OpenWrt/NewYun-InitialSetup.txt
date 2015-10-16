@@ -21,3 +21,112 @@ http://www.arduino.cc/en/Tutorial/ExpandingYunDiskSpace
 
 3) check system:
 df -h / /mnt/sda1
+
+=================================================================================
+
+1ALT) ALTERNATIVE WITHOUT WEB INTERFACE (with latest linino):
+	cd /mnt/sda1
+	wget http://download.linino.org/linino_distro/master/latest/openwrt-ar71xx-generic-linino-yun-16M-250k-squashfs-sysupgrade.bin
+	sysupgrade -v openwrt-ar71xx-generic-linino-yun-16M-250k-squashfs-sysupgrade.bin
+
+2ALT) AlTERNATIVE without INO and serial connection:
+a)haltIfSDAlreadyOnOverlay 
+(should give no results, if it does: Micro SD card is already used as additional Arduino Yun disk space. Nothing to do.)
+	mount | grep ^/dev/sda | grep 'on /overlay'
+	
+b)haltIfInternalFlashIsFull
+should give more than 1000 otherwise: You don't have enough disk space to install the utility software. You need to free at least 1MB of Flash memory.\nRetry!
+	df / | awk '/rootfs/ {print $4}'
+		
+c)haltIfSDCardIsNotPresent
+(should list - make sure SD card is in "The micro SD card is not available")
+	ls /mnt/sda1
+
+
+d)installSoftware
+//make sure you are online:
+	opkg update
+	opkg install e2fsprogs mkdosfs fdisk rsync
+
+//if Signature check failed.Remove wrong Signature file. then comment #option check_signature from /etc/opkg.conf
+
+
+e)partitionAndFormatSDCard
+
+//unmount
+	umount /dev/sda?
+	rm -rf /mnt/sda?
+
+//clears partition table
+	dd if=/dev/zero of=/dev/sda bs=4096 count=10
+
+// create the first partition (replace 1024 to how many megs you want for data)
+	(echo n; echo p; echo 1; echo; echo + 2048M; echo w) | fdisk /dev/sda
+
+//unmount
+	umount /dev/sda?
+	rm -rf /mnt/sda?
+
+// create the second partition
+	(echo n; echo p; echo 2; echo; echo; echo w) | fdisk /dev/sda
+
+//unmount
+	umount /dev/sda?
+	rm -rf /mnt/sda?
+
+// specify first partition is FAT32
+	(echo t; echo 1; echo c; echo w) | fdisk /dev/sda
+
+//unmount
+	umount /dev/sda?
+	rm -rf /mnt/sda?
+
+// wait 5 sec
+//unmount
+	umount /dev/sda?
+	rm -rf /mnt/sda?
+
+// format the first partition to FAT32
+	mkfs.vfat /dev/sda1
+
+// wait 1 sec
+
+// format the second partition to Linux EXT4
+	mkfs.ext4 /dev/sda2
+
+
+f)createArduinoFolder
+
+	mkdir -p /mnt/sda1
+	mount /dev/sda1 /mnt/sda1
+	mkdir -p /mnt/sda1/arduino/www
+//unmount
+	umount /dev/sda?
+	rm -rf /mnt/sda?
+
+
+
+g)copySystemFilesFromYunToSD
+	
+	mkdir -p /mnt/sda2
+	mount /dev/sda2 /mnt/sda2
+	rsync -a --exclude=/mnt/ --exclude=/www/sd /overlay/ /mnt/sda2/
+//unmount
+	umount /dev/sda?
+	rm -rf /mnt/sda?
+
+
+
+h)enableExtRoot
+
+	uci add fstab mount
+	uci set fstab.@mount[0].target=/overlay
+	uci set fstab.@mount[0].device=/dev/sda2
+	uci set fstab.@mount[0].fstype=ext4
+	uci set fstab.@mount[0].enabled=1
+	uci set fstab.@mount[0].enabled_fsck=0
+	uci set fstab.@mount[0].options=rw,sync,noatime,nodiratime
+	uci commit
+
+i) We are done! Now press the YUN RST button to apply the changes.
+

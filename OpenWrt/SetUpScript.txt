@@ -1,26 +1,162 @@
 ﻿#!/bin/sh /etc/rc.common
 # Example script
 
+#Go to System/System and adjust time! it is important for SSL and downloads
+
+
  #*********** install pip *********************
 opkg update
+//if Signature check failed.Remove wrong Signature file. then comment #option check_signature from /etc/opkg.conf
+
+opkg install nano
 opkg install distribute
 opkg install python-openssl
+#************************************* filezilla
+opkg install vsftpd openssh-sftp-server
+
 easy_install pip
 
 #*********** use SD card instead **************
 
 mkdir /mnt/sda1/python-packages
-#vim /etc/profile
-#Press i  to enter insert mode, below export lines add:
+nano /etc/profile
+#below export lines add:
 #export PYTHONPATH=/mnt/sda1/python-packages
-#Press esc  to go back to command mode. Type :wq  to save the file and quit vim.
 #Reload environment by typing:
 source /etc/profile
 
 pip install --target /mnt/sda1/python-packages twilio
 
-#************************************* filezilla
-opkg install vsftpd openssh-sftp-server
+
+#*************************************  FTP the folders: 
+#from git\GreenHouseYun\OpenWrt\root\  to:
+# /mnt/sda1/arduino/python
+# /mnt/sda1/rhc
+#from git\GreenHouseYun\GreenHouseWeb\build\  to:
+# /mnt/sda1/arduino/www
+
+
+#*************************************  Upload Arduino file: 
+#UPLOAD SKETCH through web interface from git\GreenHouseYun\Arduino\YunGreenhouse\YunGreenhouse.hex
+#ps use IE, since chrome does not work or does not notify you when done....
+
+#*************************************  Change web interface password!
+
+#*************************************  Increase httpd to accept 5 connections at the same time:
+nano /etc/config/uhttpd
+#increase number of requests from 2 to 5:
+option max_requests 5
+
+#*************************************  MySQL
+
+ opkg install libpthread libncurses libreadline mysql-server
+ sed -i 's,^datadir.*,datadir         = "/srv/mysql",g' /etc/my.cnf
+ sed -i 's,^tmpdir.*,tmpdir          = "/tmp",g' /etc/my.cnf
+
+ mkdir -p /srv/mysql
+ mysql_install_db --force
+#***************************************************************************************
+#Installing MySQL system tables...
+#OK
+#Filling help tables...
+#OK
+#To start mysqld at boot time you have to copy
+#support-files/mysql.server to the right place for your system
+#PLEASE REMEMBER TO SET A PASSWORD FOR THE MySQL root USER !
+#To do so, start the server, then issue the following commands:
+#/usr/bin/mysqladmin -u root password 'new-password'
+#/usr/bin/mysqladmin -u root -h GreenHouseYun password 'new-password'
+#Alternatively you can run:
+#/usr/bin/mysql_secure_installation
+#which will also give you the option of removing the test
+#databases and anonymous user created by default.  This is
+#strongly recommended for production servers.
+#See the manual for more instructions.
+#You can start the MySQL daemon with:
+#cd /usr ; /usr/bin/mysqld_safe &
+#You can test the MySQL daemon with mysql-test-run.pl
+#cd /usr/mysql-test ; perl mysql-test-run.pl
+#Please report any problems with the /usr/scripts/mysqlbug script!
+#***************************************************************************************
+
+/etc/init.d/mysqld start
+/etc/init.d/mysqld enable
+mysqladmin -u root password 'arduino4007'
+
+mysqladmin -u root -p create arduino  #(create new DB)
+mysql –u root -p   #(sql console)
+mysql>show databases;
+mysql>source /mnt/sda1/rhc/createTables.sql;
+mysql>USE arduino;
+mysql>show status;
+mysql>SHOW TABLES;
+mysql>SELECT table_name, table_type, engine FROM information_schema.tables;
+mysql>quit
+
+
+**************************************  PHP setup
+opkg update
+
+opkg install php5 php5-cgi
+nano /etc/config/uhttpd
+#list interpreter. "php=/usr/bin/php-cgi"  #(uncoment this line!)
+
+opkg install zoneinfo-core zoneinfo-northamerica
+sed -i 's,;date.timezone =,date.timezone = America/New_York,g' /etc/php.ini
+
+opkg install php5-mod-json
+sed -i 's,;extension=json.so,extension=json.so,g' /etc/php.ini
+
+/etc/init.d/uhttpd restart
+
+opkg install python-mysql
+
+
+#************************************* set up scheduled jobs:
+#In web interface go to System/Scheduled Tasks and add:
+
+@reboot /mnt/sd/rhc/startup.sh
+0 0 1 * * /mnt/sd/rhc/1month.sh
+06 01 * * * /mnt/sd/rhc/24h.sh
+03 * * * * /mnt/sd/rhc/1h.sh
+*/10 * * * * /mnt/sd/rhc/10m.sh
+* * * * * /mnt/sd/rhc/1m.sh
+
+#*************************************  In System Startup:
+#uncomment lines: 
+reset-mcu
+echo 0 > /proc/sys/kernel/printk
+
+#add before exit 0 line:
+/mnt/sd/rhc/start.sh
+
+===================== DONE =================================================
+
+#************************************* if using php to connecto to mySql:
+opkg install php5-mod-mysql
+#below replaces line ";extension=mysql.so" with "extension=mysql.so", which means uncommenting that line :)
+sed -i 's,;extension=mysql.so,extension=mysql.so,g' /etc/php.ini
+
+#(for mysqli instead use: )
+#duplicate the block named [MySQL] to [MySQLi] and rename all "mysql."-options to "mysqli.". To access a local MySQL server via socket, modify the value of "mysqli.default_socket" (which can be found in /etc/my.cnf):
+#opkg install php5-mod-mysqli
+#sed -i 's,;extension=mysqli.so,extension=mysqli.so,g' /etc/php.ini
+
+#EDIT php.ini [MySQL] section to looks like this:
+#[MySQL]
+#mysql.allow_local_infile = On
+#mysql.allow_persistent = On
+#mysql.cache_size = 2000
+#mysql.max_persistent = -1
+#mysql.max_links = -1
+#mysql.default_port = 3306
+#mysql.default_socket = /tmp/run/mysqld.sock
+#mysql.default_host = 127.0.0.1
+#mysql.default_user = root
+#mysql.default_password = arduino4007
+#mysql.connect_timeout = 60
+#mysql.trace_mode = Off
+
 
 #************************************* webcam 
 opkg install kmod-video-uvc  
@@ -90,99 +226,6 @@ mjpg_streamer -i "input_uvc.so -y -n -f 30 -r 320x240" -o "output_http.so -p 82 
 
 mjpg_streamer -i "input_uvc.so -d /dev/video0 -r 640x480 -f 25" -o "output_http.so -p 82 -w /www/webcam"
 #then can see it at:  http://miticv.duckdns.org:82/webcam/stream.html
-
-#*************************************  MySQL
-
- opkg install libpthread libncurses libreadline mysql-server
- sed -i 's,^datadir.*,datadir         = "/srv/mysql",g' /etc/my.cnf
- sed -i 's,^tmpdir.*,tmpdir          = "/tmp",g' /etc/my.cnf
-
- mkdir -p /srv/mysql
- mysql_install_db –force
-#***************************************************************************************
-#Installing MySQL system tables...
-#OK
-#Filling help tables...
-#OK
-#To start mysqld at boot time you have to copy
-#support-files/mysql.server to the right place for your system
-#PLEASE REMEMBER TO SET A PASSWORD FOR THE MySQL root USER !
-#To do so, start the server, then issue the following commands:
-#/usr/bin/mysqladmin -u root password 'new-password'
-#/usr/bin/mysqladmin -u root -h GreenHouseYun password 'new-password'
-#Alternatively you can run:
-#/usr/bin/mysql_secure_installation
-#which will also give you the option of removing the test
-#databases and anonymous user created by default.  This is
-#strongly recommended for production servers.
-#See the manual for more instructions.
-#You can start the MySQL daemon with:
-#cd /usr ; /usr/bin/mysqld_safe &
-#You can test the MySQL daemon with mysql-test-run.pl
-#cd /usr/mysql-test ; perl mysql-test-run.pl
-#Please report any problems with the /usr/scripts/mysqlbug script!
-#***************************************************************************************
-
-/etc/init.d/mysqld start
-/etc/init.d/mysqld enable
-mysqladmin -u root password 'arduino4007'
-
-mysqladmin -u root -p create arduino  #(create new DB)
-mysql –root -p   #(sql console)
-mysql>USE arduino
-mysql>CREATE TABLE ………
-mysql>INSERT INTO …………
-mysql>SHOW TABLES;
-mysql>DESCRIBE tablename;
-mysql>quit
-#INT, SMALLINT, BIGINT, DEC (exact value), DOUBLE (approx val)
-#BIT, 
-#TIMESTAMP (autoupdate), DATE, TIME, DATETIME, YEAR
-#CHAR(0-255), 
-#VARCHAR(),
-
-**************************************  PHP setup
-opkg update
-
-opkg install php5 php5-cgi
-vi /etc/config/uhttpd
-#list interpreter. "php=/usr/bin/php-cgi"  #(uncomment this line with vi /etc/config/uhttpd)
-#this line should do it as well (did not test it):
-#sed -i 's,#list interpreter. "php=/usr/bin/php-cgi",list interpreter. "php=/usr/bin/php-cgi",g' /etc/php.ini
-
-
-/etc/init.d/uhttpd restart
-opkg install php5-mod-mysql
-#below replaces line ";extension=mysql.so" with "extension=mysql.so", which means uncommenting that line :)
-sed -i 's,;extension=mysql.so,extension=mysql.so,g' /etc/php.ini
-
-opkg install php5-mod-json
-sed -i 's,;extension=json.so,extension=json.so,g' /etc/php.ini
-
-#(for mysqli instead use: )
-#duplicate the block named [MySQL] to [MySQLi] and rename all "mysql."-options to "mysqli.". To access a local MySQL server via socket, modify the value of "mysqli.default_socket" (which can be found in /etc/my.cnf):
-#opkg install php5-mod-mysqli
-#sed -i 's,;extension=mysqli.so,extension=mysqli.so,g' /etc/php.ini
-
-opkg install zoneinfo-core zoneinfo-northamerica
-sed -i 's,;date.timezone =,date.timezone = America/New_York,g' /etc/php.ini
-
-opkg install python-mysql
-#EDIT php.ini [MySQL] section to looks like this:
-#[MySQL]
-#mysql.allow_local_infile = On
-#mysql.allow_persistent = On
-#mysql.cache_size = 2000
-#mysql.max_persistent = -1
-#mysql.max_links = -1
-#mysql.default_port = 3306
-#mysql.default_socket = /tmp/run/mysqld.sock
-#mysql.default_host = 127.0.0.1
-#mysql.default_user = root
-#mysql.default_password = arduino4007
-#mysql.connect_timeout = 60
-#mysql.trace_mode = Off
-
 
 
 
