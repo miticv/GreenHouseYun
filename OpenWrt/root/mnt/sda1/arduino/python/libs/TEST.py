@@ -66,15 +66,15 @@ class testing:
 		id = lib.getSensorIdByAddress("28 A7 6A 6F 6 0 0 B0")		
 		if(id == -1):
 			error = "Can not find T5 sensor"
-		id = lib.getSensorIdByNameType("Temp", "DHT")		
+		id = lib.getSensorIdByAddressSubAddress("Digital10", "Temperature")		
 		if(id == -1):
-			error = "Can not find DHT Temp sensor"
-		id = lib.getSensorIdByNameType("Humidity", "DHT")		
+			error = "Can not find Digital10 Temperature sensor"
+		id = lib.getSensorIdByAddressSubAddress("Digital10", "Humidity")		
 		if(id == -1):
-			error = "Can not find DHT Humidity sensor"
-		id = lib.getSensorIdByNameType("Heat Index", "DHT")		
+			error = "Can not find Digital10 Humidity sensor"
+		id = lib.getSensorIdByAddressSubAddress("Digital10", "HeatIndex")		
 		if(id == -1):
-			error = "Can not find DHT Heat Index sensor"
+			error = "Can not find Digital10 Heat Index sensor"
 		self.showResult(error)
 
 	def testlibStatLogger(self):

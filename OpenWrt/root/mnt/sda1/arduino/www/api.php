@@ -168,6 +168,10 @@ function get_SensorUptimeData(){
     $var2 = get_Uptime();
     $var3 = get_sensorsDatabseDefinitions();
 
+    if (empty($var1)) { $var1 = "null"; }
+   	if (empty($var2)) { $var2 = "null"; }
+    if (empty($var3)) { $var3 = "null"; }
+
 	return '{ "sensors" : ' . $var1 . ', "uptime": ' . $var2 . ', "sensorLabels" : ' . $var3 . '}';
 }
 
@@ -216,12 +220,14 @@ function do_yun_reset(){
 	// try run both at the same time: ?
 	//$execStr = 'reset-mcu; /sbin/reboot'; 	
 
-
 	/* do arduino first so it doesnt interfeer with yun reboot: */
-	do_arduino_reset();
+	//do_arduino_reset();
 
 	/* now reboot yun itself: */
-	$execStr = '/sbin/reboot';    
+	//$execStr = '/sbin/reboot';    
+  	
+  	$execStr = 'python /mnt/sda1/arduino/python/apiGetBoot.py';    
+
   	if($debug) { header('Debug-value: ' . $execStr); }
   	exec(trim($execStr), $result); 
 

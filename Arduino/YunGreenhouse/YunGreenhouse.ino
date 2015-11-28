@@ -53,6 +53,9 @@ int numberOfDevices;
 DeviceAddress tempSensors[TemperatureDevices];  //DeviceAddress is uint8_t[8]
 bool tempSensorsReadable[TemperatureDevices];
 
+/* ############################### boot ########################### */
+#define BOOTPIN 7        // what pin we're connected to DIGITAL BOOT
+
 /* ##################### VARS ##################################### */
 // All request will be transfered here
 float TempVar[4];
@@ -63,13 +66,17 @@ char temp;
 //char sensorFloatValue[10];
 char sensorValue[5];
 Process p;
-
+String command;
  
 void setup() {
 // Bridge startup: 
   // do nothing for 10 seconds (do not interupt booting process):
   delay(10000); 
 
+  pinMode(BOOTPIN, OUTPUT);
+  digitalWrite(BOOTPIN, HIGH);
+
+  
   pinMode(13,OUTPUT);
   digitalWrite(13, LOW);
 
@@ -98,10 +105,9 @@ void loop() {
   client = server.accept();
   // There is a new client?
   if (client) {
-    // read the command
-	String command = client.readString();
-    command.trim();        //kill whitespace
-
+        // read the command
+        getCommand();
+        
 	clientSendJSON();
 
 	if (command == "temp") {
@@ -116,9 +122,14 @@ void loop() {
 	else if (command == "err") {
 		ShowLastError();
 	}
-	else{
-		ReadData();
+	else if (command == "boot") {
+		Reboot();
 	}
+	else if (command == "data") {
+		ReadData();
+	}else{
+          client.println("{\"error\":\"Invalid command\" }");
+        }
 
     // Close connection and free resources.
     client.stop();
@@ -136,6 +147,12 @@ void ReadData(){
 	ReadDHT();
 	client.print(", \"Temperatures\": ");
 	ReadTemps();
+        
+//        client.print(", \"Command\": ");
+//        client.print("\"");
+//        client.print(command);
+//        client.print("\"");
+
 	client.print("}");
 }
 
@@ -216,12 +233,26 @@ void ShowLastError(){
 
 }
 
+void Reboot(){
+  digitalWrite(BOOTPIN, LOW); //send reboot signal
+}
+
 void clientSendJSON(){
 	client.println("Status: 200");
 	client.println("Content-type: application/json");
 	client.println();
 }
 
+void getCommand(){
+        //String command = client.readString();
+        int i = 0;
+        while(command.indexOf("GET") < 0 || i > 20 ){
+                command = client.readStringUntil('\r');
+                i++;
+        }
+        command.trim();        //kill whitespace
+        command = command.substring(command.indexOf(" /")+2,command.indexOf(" HTTP"));  //"GET /data HTTP/1.1"
+}
 
 void SensorsSetUp(){
 

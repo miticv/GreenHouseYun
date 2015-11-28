@@ -15,7 +15,8 @@ mysql =dict(
 )
 
 arduino = dict(
-	dataUrl = 'http://127.0.0.1:5555/data'
+	dataUrl = 'http://127.0.0.1:5555/data',
+	bootUrl = 'http://127.0.0.1:5555/boot'
 )
 
 twillio = dict(
