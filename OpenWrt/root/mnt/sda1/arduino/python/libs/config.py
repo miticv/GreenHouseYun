@@ -16,7 +16,11 @@ mysql =dict(
 
 arduino = dict(
 	dataUrl = 'http://127.0.0.1:5555/data',
-	bootUrl = 'http://127.0.0.1:5555/boot'
+	bootUrl = 'http://127.0.0.1:5555/boot',
+	lightonUrl = 'http://127.0.0.1:5555/lighton',
+	lightoffUrl = 'http://127.0.0.1:5555/lightoff',
+	veggielightonUrl = 'http://127.0.0.1:5555/veggielighton',
+	veggielightoffUrl = 'http://127.0.0.1:5555/veggielightoff'
 )
 
 twillio = dict(

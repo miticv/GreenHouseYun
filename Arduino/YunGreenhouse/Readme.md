@@ -13,6 +13,21 @@ Ino is using following pins:
 ##Website: 
 * http://192.168.1.35/sd/
 
+##Arduino APIs:
+It is accepting only calls from Linux box on: http://127.0.0.1:5555/
+
+* temp  (reads temperature from DHT sensor)
+* temps (reads all temperatures from sensors)
+* light (reads light sensor)
+* err (show last error)
+* veggielightoff 
+* veggielighton
+* lightoff
+* lighton
+* boot (reboots the arduino)
+* data (gets all sensor data back)
+
+
 ##APIs:
 
 accepts "from" and "to"

@@ -54,7 +54,11 @@ DeviceAddress tempSensors[TemperatureDevices];  //DeviceAddress is uint8_t[8]
 bool tempSensorsReadable[TemperatureDevices];
 
 /* ############################### boot ########################### */
-#define BOOTPIN 7        // what pin we're connected to DIGITAL BOOT
+#define BOOTPIN 7        // what pin we're connected to DIGITAL BOOT (default closed: HIGH)
+
+/* ############################### boot ########################### */
+#define VEGGIELIGHT 6        // what pin we're connected to VEGGIE LIGHT  (default closed: HIGH)
+#define LIGHT 5              // what pin we're connected to GreenhouseLight  (default closed: HIGH)
 
 /* ##################### VARS ##################################### */
 // All request will be transfered here
@@ -76,6 +80,11 @@ void setup() {
   pinMode(BOOTPIN, OUTPUT);
   digitalWrite(BOOTPIN, HIGH);
 
+  pinMode(VEGGIELIGHT, OUTPUT);
+  digitalWrite(VEGGIELIGHT, HIGH);
+
+  pinMode(LIGHT, OUTPUT);
+  digitalWrite(LIGHT, HIGH);
   
   pinMode(13,OUTPUT);
   digitalWrite(13, LOW);
@@ -121,6 +130,18 @@ void loop() {
 	}
 	else if (command == "err") {
 		ShowLastError();
+	}
+	else if (command == "veggielightoff") {
+		VeggieLight(0);
+	}
+	else if (command == "veggielighton") {
+		VeggieLight(1);
+	}
+	else if (command == "lightoff") {
+		Light(0);
+	}
+	else if (command == "lighton") {
+		Light(1);
 	}
 	else if (command == "boot") {
 		Reboot();
@@ -235,6 +256,26 @@ void ShowLastError(){
 
 void Reboot(){
   digitalWrite(BOOTPIN, LOW); //send reboot signal
+}
+
+void VeggieLight(uint8_t onoff){
+	if (onoff == 0){
+		digitalWrite(VEGGIELIGHT, LOW);
+	}
+	else {
+		digitalWrite(VEGGIELIGHT, HIGH);
+	}
+	client.print("{ \"result\" : \"success\" }");
+}
+
+void Light(uint8_t onoff){
+	if (onoff == 0){
+		digitalWrite(LIGHT, LOW);
+	}
+	else {
+		digitalWrite(LIGHT, HIGH);
+	}
+	client.print("{ \"result\" : \"success\" }");
 }
 
 void clientSendJSON(){
