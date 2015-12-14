@@ -23,7 +23,11 @@ function main() {
 		        break;
 
 	        case "get_sensor_log":
-	        	$value = get_InfoSensor($_GET["from"], $_GET["to"], $_GET["freq"]);
+	        	$value = get_InfoSensor($_GET["from"], $_GET["to"], $_GET["freq"], false);
+	        	break;
+
+	        case "get_sensor_log_raw":
+	        	$value = get_InfoSensor($_GET["from"], $_GET["to"], $_GET["freq"], true);
 	        	break;
 
 	  	 	case "get_uptime":
@@ -93,7 +97,7 @@ function get_InfoError($from, $to){
 	  return $result[0];
 }
 
-function get_InfoSensor($from, $to, $freq){
+function get_InfoSensor($from, $to, $freq, $raw){
 	  if(!isset($to) && !isset($from)){
 	  	//default values are for today
 	  	$to = "";
@@ -118,9 +122,36 @@ function get_InfoSensor($from, $to, $freq){
 
 	  $execStr = 'python /mnt/sda1/arduino/python/' . $programName . ' "' . $from . '" "' . $to . '"';    
 	  if($debug) { header('Debug-value: ' . $execStr); }
-
 	  exec(trim($execStr), $result);  
-	  return $result[0];
+
+	  if(!$raw){
+		  ################### fix -999 values ###################
+		  $incr = 9; #number of sensors returning (each 9th position contains same type sensor)
+		  $adjustedresult = $result[0];
+		  $jsonarray = json_decode($adjustedresult, true);	  
+		  for($x=0; $x < count($jsonarray); $x++) {
+			    if($jsonarray[$x]['value'] == -999) {
+			    	$prev = $jsonarray[$x]['value']; # $jsonarray[$x-$incr]['value'];
+			    	$next = $jsonarray[$x]['value'];
+			    	$i = $incr;
+			    	while($prev == -999 && ($x-$i >= 0)){		    		
+			    		$prev = $jsonarray[$x-$i]['value'];
+			    		$i = $i + $incr;			    		
+			    	}
+					$i = $incr;
+			    	while($next == -999 && ($x+$i < count($jsonarray))){		    					    	
+			    		$next = $jsonarray[$x+$i]['value'];
+			    		$i = $i + $incr;
+			    	}
+			    	$jsonarray[$x]['value'] = ($prev + $next) / 2;
+
+			    }
+		  }
+		  return json_encode($jsonarray);
+		  ########################################################
+	  } else {
+	  	  return $result[0];
+	  } 	  
 }
 
 function get_SensorData(){
