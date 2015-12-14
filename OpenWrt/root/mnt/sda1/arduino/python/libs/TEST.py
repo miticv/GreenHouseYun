@@ -13,6 +13,8 @@ import libArduinoSensors
 import libDbSensors
 import libStatLogger
 import libSensorLogger
+import libDbSetting
+import libArduinoVeggieLight
 
 class testing:
 
@@ -92,6 +94,56 @@ class testing:
 		lib = libSensorLogger.sensorLogger(11, True)
 		self.showResult(error)
 
+	def testlibSettings(self):
+		error = ""
+		lib = libDbSetting.databaseSetting()
+		str = lib.getSettingByKey("ExtendedLight")
+		if(str == ""): 
+			error = "cannot get setting"
+		str = lib.getSettingByKey("ExtendedLightStartTime")
+		if(str == ""): 
+			error = "cannot get setting"
+		str = lib.getSettingByKey("ExtendedLightMinLux")
+		if(str == ""): 
+			error = "cannot get setting"
+		str = lib.getSettingByKey("ExtendedLightEndTime")
+		if(str == ""): 
+			error = "cannot get setting"
+		self.showResult(error)
+
+	def testlibArduinoVeggieLight(self):
+		error = ""
+		lib = libArduinoVeggieLight.arduinoVeggieLight()
+		intvaltime = lib.getCurrentTime()
+		if(intvaltime < 0):
+			error = "could not get current time"
+		intval = lib.getDatabaseMinLight()
+		if(intval < 0):
+			error = "could not get min light"
+		intval = lib.getDatabaseDateStart()
+		if(intval < 0):
+			error = "could not get start date"
+		intval = lib.getDatabaseDateEnd()
+		if(intval < 0):
+			error = "could not get end date"
+		#boolval = lib.useExtendedLight()
+		boolval = lib.isBetweenAlotedTime(0, 240000)
+		if(not boolval):
+			error = "wrong calculation between alotted time"
+		boolval = lib.isBetweenAlotedTime(intvaltime-10, intvaltime+10)
+		if(not boolval):
+			error = "wrong calculation between alotted time"
+		boolval = lib.isBetweenAlotedTime(intvaltime+10, intvaltime-10)
+		if(boolval):
+			error = "wrong calculation between alotted time"
+		boolval = lib.isLightLow(0)
+		if(not boolval):
+			error = "wrong calculation of light low"	
+		boolval = lib.isLightLow(100000)
+		if(boolval):
+			error = "wrong calculation of light low"	
+		self.showResult(error)
+
 	def input(self):
 		var = raw_input("") #"Enter any key (q to quit): "
 		if (var == 'q'):
@@ -114,7 +166,10 @@ print "-------- testing libStatLogger ---------"
 t.testlibStatLogger()
 print "-------- testing libSensorLogger -------"
 t.testlibSensorLogger()
-
+print "-------- testing libSettings -----------"
+t.testlibSettings()
+print "-------- testing libArduinoVeggieLight -"
+t.testlibArduinoVeggieLight()
 print "----------------------------------------"
 print "Testing completed"
 
