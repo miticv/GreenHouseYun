@@ -38,15 +38,16 @@ accepts "from" and "to"
 accepts "from", "to" and "freq"
 
 * http://192.168.1.35/sd/api.php?action=get_sensor_log
+* 
 
-
+* http://192.168.1.35/sd/api.php?action=light_off
+* http://192.168.1.35/sd/api.php?action=light_on
 * http://192.168.1.35/sd/api.php?action=get_uptime
 * http://192.168.1.35/sd/api.php?action=get_sensor_data
 * http://192.168.1.35/sd/api.php?action=get_sensor_definitions
 * http://192.168.1.35/sd/api.php?action=get_sensor_and_uptime_data
 * http://192.168.1.35/sd/api.php?action=reset_arduino
 * http://192.168.1.35/sd/api.php?action=reset_yun
-
 
 
 ##BASIC WRT
