@@ -3,7 +3,7 @@
 <div cg-busy="loading">
     <div ng-show="loaded">
         <div class="row">
-            <div class="col-sm-4">
+            <div class="col-sm-6">
                 <form class="form">
                     <div class="form-group">
                         <label for="startDate">Start Date</label>
@@ -32,9 +32,19 @@
                             </select>
                         </span>
                     </div>
+                    <div class="form-group">
+                        <label for="startDate">Normalize Data</label>
+                        <input type="checkbox" ng-model="normalize.value" />  {{normalize.value}}
+                    </div>
                 </form>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-info" ng-click="weekData()">This week data</button>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-info" ng-click="monthData()">This month data</button>
+                </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-6">
                 <div class="form-inline">
                     <span ng-repeat="sensor in sensors">
                         <label class="checkbox" for="{{sensor.name}}">
@@ -43,16 +53,9 @@
                         </label>
                     </span>
                 </div>
-
-            </div>
-            <div class="col-sm-4">
-                <br />
-                Prev month, next month, year
-                <br /> Start end date calendar
-                <br /> frequency (60min or 10min)
-                <br /> checkboxes with all sensors
-                <br /> Show all same type sensors
-
+                <!--<div class="btn-group">
+                    <button type="button" class="btn btn-info" ng-click="pondTemp()">Pond Temperature</button>
+                </div>-->
             </div>
         </div>
         <div class="row">

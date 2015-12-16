@@ -1,5 +1,7 @@
 <?php
 
+ini_set("memory_limit","12M");
+
 //shows linux command in header
 //$debug = True;
 $debug = False;

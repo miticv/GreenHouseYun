@@ -32,9 +32,9 @@ CREATE  TABLE `setting` (
 ) ENGINE = InnoDB AUTO_INCREMENT=1;
 
 INSERT INTO setting ( mykey, myvalue) VALUES ('ExtendedLight', 'Y');
-INSERT INTO setting ( mykey, myvalue) VALUES ('ExtendedLightStartTime', '18:00:00');
+INSERT INTO setting ( mykey, myvalue) VALUES ('ExtendedLightStartTime', '05:30:00');
 INSERT INTO setting ( mykey, myvalue) VALUES ('ExtendedLightMinLux', '800');
-INSERT INTO setting ( mykey, myvalue) VALUES ('ExtendedLightEndTime', '20:00:00');
+INSERT INTO setting ( mykey, myvalue) VALUES ('ExtendedLightEndTime', '21:30:00');
 
 #Table: device
 CREATE  TABLE `device` (

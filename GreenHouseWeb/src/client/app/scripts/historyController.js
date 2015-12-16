@@ -8,6 +8,10 @@ angular.module('greenhouse').
 
         //functions:
         $scope.DrawGraph = DrawGraph;
+        $scope.weekData = weekData;
+        $scope.monthData = monthData;
+        $scope.pondTemp = pondTemp;
+
 
         $scope.sDate = new Date();
         $scope.eDate = new Date();
@@ -15,6 +19,7 @@ angular.module('greenhouse').
         $scope.startDate = moment().format('YYYY-MM-DD HH:mm:ss');
         $scope.endDate = moment().day(-7).format('YYYY-MM-DD HH:mm:ss'); //use past 7 days
         $scope.freq = "60min"; //10min
+        $scope.normalize = { value: true };
 
         $scope.sensors = sensors.data.result.sensors;
         $scope.sensorsAvailable = [];
@@ -89,7 +94,7 @@ angular.module('greenhouse').
         $scope.startDate = moment($scope.sDate).format('YYYY-MM-DD HH:mm:ss');
         $scope.endDate = moment($scope.eDate).format('YYYY-MM-DD HH:mm:ss');
 
-        $scope.loading = greenApiService.getSensorData($scope.startDate, $scope.endDate, $scope.freq).then(
+        $scope.loading = greenApiService.getSensorData($scope.startDate, $scope.endDate, $scope.freq, $scope.normalize.value).then(
                 function success(data) {
 
                     prepareGraphData(data.data.result);
@@ -101,5 +106,24 @@ angular.module('greenhouse').
                 $scope.loaded = false;
             });
         }
+
+        function weekData() {
+            $scope.sDate = moment().subtract(7, 'days');
+            $scope.eDate = moment(); //use past 7 days
+            $scope.freq = "10min"; //10min
+            //DrawGraph();
+        }
+
+        function monthData() {
+            $scope.sDate = moment().subtract(1, 'month');
+            $scope.eDate = moment(); //use past month
+            $scope.freq = "60min"; //10min
+            //DrawGraph();
+        }
+
+        function pondTemp() {
+
+        }
+
 
     }]);

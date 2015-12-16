@@ -43,9 +43,9 @@
         <div class="row">
             <div class="col-sm-6 table-responsive">
                 <table class="table">
-                    <caption>Air statistics</caption>
+                    <caption>Environment statistics</caption>
                     <thead>
-                        <tr class="bg-primary"><td>Air</td><td> Out</td><td>In</td></tr>
+                        <tr class="bg-primary"><td>Environment</td><td> </td><td></td></tr>
                     </thead>
                     <tbody>
                         <tr class="success">
@@ -68,14 +68,31 @@
                             <td> <span class="badge">{{light.v}}</span></td>
                             <td></td>
                         </tr>
+                        <tr class="success">
+                            <td>{{temp5.name}} <abbr data-popover-title="Device Address" data-popover="{{temp5.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
+                            <td><span class="badge"><span ng-show="tempFormat == 'C'">{{temp5.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temp5.f}} F&deg;</span></span></td>
+                            <td></td>
+                        </tr>
+
+                        <tr class="success">
+                            <td>{{veggieLight.name}} <abbr data-popover-title="Device Address" data-popover="{{veggieLight.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
+                            <td><span ng-show="veggieLight.value == 0"><span class="fa-stack"><i class="fa fa-circle fa-stack-2x" style="color: #808080;"></i><i class="fa fa-lightbulb-o fa-stack-1x fa-inverse"></i></span> (off)</span><span ng-hide="veggieLight.value == 0"><span class="fa-stack"><i class="fa fa-circle fa-stack-2x" style="color: yellow;"></i><i class="fa fa-lightbulb-o fa-stack-1x"></i></span> (on)</span></td>
+                            <td></td>
+                        </tr>
+                        <tr class="success">
+                            <td>{{houseLight.name}} <abbr data-popover-title="Device Address" data-popover="{{houseLight.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
+                            <td><span ng-show="houseLight.value == 0"><span class="fa-stack"><i class="fa fa-circle fa-stack-2x" style="color: #808080;"></i><i class="fa fa-lightbulb-o fa-stack-1x fa-inverse"></i></span> (off)</span><span ng-hide="houseLight.value == 0"><span class="fa-stack"><i class="fa fa-circle fa-stack-2x" style="color: yellow;"></i><i class="fa fa-lightbulb-o fa-stack-1x"></i></span> (on)</span></td>
+                            <td></td>
+                        </tr>
+
                     </tbody>
                 </table>
             </div><!-- /.col-sm-6 -->
             <div class="col-sm-6  table-responsive">
                 <table class="table">
-                    <caption>Water Statistics</caption>
+                    <caption>Pond Statistics</caption>
                     <thead>
-                        <tr class="bg-primary"><td>Water</td><td></td></tr>
+                        <tr class="bg-primary"><td>Pond</td><td></td></tr>
                     </thead>
                     <tbody>
                         <!--<tr class="success"><td>Pool Level</td><td><span class="badge">5 m</span></td></tr>-->
@@ -95,10 +112,7 @@
                             <td>{{temp4.name}} <abbr data-popover-title="Device Address" data-popover="{{temp4.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
                             <td><span class="badge"><span ng-show="tempFormat == 'C'">{{temp4.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temp4.f}} F&deg;</span></span></td>
                         </tr>
-                        <tr class="success">
-                            <td>{{temp5.name}} <abbr data-popover-title="Device Address" data-popover="{{temp5.address}}" data-popover-placement="right" data-popover-trigger="mouseenter"><i class="fa fa-map-marker"></i></abbr></td>
-                            <td><span class="badge"><span ng-show="tempFormat == 'C'">{{temp5.c}} C&deg;</span> <span ng-hide="tempFormat == 'C'">{{temp5.f}} F&deg;</span></span></td>
-                        </tr>
+
                         <!--<tr class="success"><td>Pump Running</td><td><i class="fa fa-cog fa-spin fa-lg green"></i></td></tr>-->
                     </tbody>
                 </table>

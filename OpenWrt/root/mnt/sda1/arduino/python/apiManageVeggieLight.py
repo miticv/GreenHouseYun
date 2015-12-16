@@ -14,9 +14,10 @@ data = "{ }"
 #get current light sensor value:
 lib = libArduinoSensors.arduinoSensors()
 arduinoData = lib.ArduinoData
-
 valueCurrentLight = int(arduinoData["Light"]["Light"])
 
-data = libArduinoVeggieLight.manageLight(valueCurrentLight).result
+lib = libArduinoVeggieLight.arduinoVeggieLight()
+lib.manageLight(valueCurrentLight)
+data = lib.result
 
 print data

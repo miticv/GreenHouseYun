@@ -56,10 +56,13 @@ bool tempSensorsReadable[TemperatureDevices];
 /* ############################### boot ########################### */
 #define BOOTPIN 7        // what pin we're connected to DIGITAL BOOT (default closed: HIGH)
 
-/* ############################### boot ########################### */
+/* ############################### digital pins ########################### */
 #define VEGGIEPIN 6        // what pin we're connected to VEGGIE LIGHT  (default closed: HIGH)
 #define LIGHTPIN 5              // what pin we're connected to GreenhouseLight  (default closed: HIGH)
+#define BRIDGEREADYPIN 13     ////light up LED 13 as a signal that bridge is ready
 
+/* ############################### analog pins ########################### */
+#define LIGHTSENSORPIN 0    //
 /* ##################### VARS ##################################### */
 // All request will be transfered here
 float TempVar[4];
@@ -86,8 +89,8 @@ void setup() {
   pinMode(LIGHTPIN, OUTPUT);
   digitalWrite(LIGHTPIN, HIGH);
   
-  pinMode(13,OUTPUT);
-  digitalWrite(13, LOW);
+  pinMode(BRIDGEREADYPIN, OUTPUT);
+  digitalWrite(BRIDGEREADYPIN, LOW);
 
   Bridge.begin();
 
@@ -104,7 +107,7 @@ void setup() {
   server.begin();
   
   //light up LED 13 as a signal that bridge is ready
-  digitalWrite(13, HIGH);
+  digitalWrite(BRIDGEREADYPIN, HIGH);
  
 }
 
@@ -168,7 +171,9 @@ void ReadData(){
 	ReadDHT();
 	client.print(", \"Temperatures\": ");
 	ReadTemps();
-        
+	client.print(", \"DigitalPins\": ");
+	ReadDigitalPins();
+
 //        client.print(", \"Command\": ");
 //        client.print("\"");
 //        client.print(command);
@@ -179,10 +184,12 @@ void ReadData(){
 
 void ReadLight(){
 
-	// Measure light level
+	// Measure light level: LIGHTSENSORPIN
 	client.print("{ \"Light\":");
-	client.print(analogRead(A0));
-	client.print(", \"Address\": \"Analog0\"");
+	client.print(analogRead(LIGHTSENSORPIN));
+	client.print(", \"Address\": \"Analog");
+	client.print(LIGHTSENSORPIN);
+	client.print("\"");
 	client.print(" }");
 }
 
@@ -212,7 +219,9 @@ void ReadDHT(){
 		client.print(TempVar[2]);
 		client.print(" , \"HeatIndexF\":");
 		client.print(TempVar[3]);
-		client.print(", \"Address\": \"Digital10\"");
+		client.print(", \"Address\": \"Digital");
+		client.print(DHTPIN);
+		client.print("\"");
 		client.print("}");
 
 	}
@@ -244,6 +253,23 @@ void ReadTemps(){
 		if (i != (numberOfDevices - 1)) client.print(", ");
 	}
 	client.print("]");
+}
+
+void ReadDigitalPins(){
+	
+	client.print("{ ");
+	client.print("\"VeggieLight\": { \"value\": ");
+	client.print(digitalRead(VEGGIEPIN));
+	client.print(", \"Address\": \"Digital");
+	client.print(VEGGIEPIN);
+	client.print("\" },");
+
+	client.print("\"Light\": {  \"value\":");
+	client.print(digitalRead(LIGHTPIN));
+	client.print(", \"Address\": \"Digital");
+	client.print(LIGHTPIN);
+	client.print("\" }");
+	client.print("} ");
 }
 
 void ShowLastError(){

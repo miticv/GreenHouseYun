@@ -28,17 +28,20 @@ angular.module('greenhouse').
         }
         //#endregion
         //#region getSensorData
-        function getSensorData(from, to, frequency) {
+        function getSensorData(from, to, frequency, normalized) {
             // /sd/api.php?action=get_sensor_log&from=2015-08-01 14-00-00&to=2015-08-01 14-30-00&freq=10min
             // /sd/api.php?action=get_sensor_log&from=2015-08-01 14-00-00&to=2015-08-02 14-00-00&freq=60min
 
+            var apiname = "get_sensor_log";
+
             if (frequency == undefined) frequency = '60min';
             if (from == undefined) from = moment().format('YYYY-MM-DD HH:mm:ss'); //use now date time
-            if (to == undefined) to = moment().day(-7).format('YYYY-MM-DD HH:mm:ss');; //use past 7 days
+            if (to == undefined) to = moment().day(-7).format('YYYY-MM-DD HH:mm:ss'); //use past 7 days
+            if (normalized != true) apiname = "get_sensor_log_raw";
 
             return $http({
                 method: 'get',
-                url: host + '/sd/api.php?action=get_sensor_log&from=' + from + 'to=' + to + '&freq=' + frequency
+                url: host + '/sd/api.php?action=' + apiname + '&from=' + from + 'to=' + to + '&freq=' + frequency
             });
         }
         //#endregion
