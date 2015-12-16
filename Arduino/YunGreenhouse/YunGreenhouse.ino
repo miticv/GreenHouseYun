@@ -57,8 +57,8 @@ bool tempSensorsReadable[TemperatureDevices];
 #define BOOTPIN 7        // what pin we're connected to DIGITAL BOOT (default closed: HIGH)
 
 /* ############################### boot ########################### */
-#define VEGGIELIGHT 6        // what pin we're connected to VEGGIE LIGHT  (default closed: HIGH)
-#define LIGHT 5              // what pin we're connected to GreenhouseLight  (default closed: HIGH)
+#define VEGGIEPIN 6        // what pin we're connected to VEGGIE LIGHT  (default closed: HIGH)
+#define LIGHTPIN 5              // what pin we're connected to GreenhouseLight  (default closed: HIGH)
 
 /* ##################### VARS ##################################### */
 // All request will be transfered here
@@ -80,11 +80,11 @@ void setup() {
   pinMode(BOOTPIN, OUTPUT);
   digitalWrite(BOOTPIN, HIGH);
 
-  pinMode(VEGGIELIGHT, OUTPUT);
-  digitalWrite(VEGGIELIGHT, HIGH);
+  pinMode(VEGGIEPIN, OUTPUT);
+  digitalWrite(VEGGIEPIN, HIGH);
 
-  pinMode(LIGHT, OUTPUT);
-  digitalWrite(LIGHT, HIGH);
+  pinMode(LIGHTPIN, OUTPUT);
+  digitalWrite(LIGHTPIN, HIGH);
   
   pinMode(13,OUTPUT);
   digitalWrite(13, LOW);
@@ -260,22 +260,24 @@ void Reboot(){
 
 void VeggieLight(uint8_t onoff){
 	if (onoff == 0){
-		digitalWrite(VEGGIELIGHT, LOW);
+		digitalWrite(VEGGIEPIN, LOW);
+		client.print("{ \"result\" : \"success veggie light low\" }");
 	}
 	else {
-		digitalWrite(VEGGIELIGHT, HIGH);
+		digitalWrite(VEGGIEPIN, HIGH);
+		client.print("{ \"result\" : \"success  veggie light high\" }");
 	}
-	client.print("{ \"result\" : \"success\" }");
 }
 
 void Light(uint8_t onoff){
 	if (onoff == 0){
-		digitalWrite(LIGHT, LOW);
+		digitalWrite(LIGHTPIN, LOW);
+		client.print("{ \"result\" : \"success light low\" }");
 	}
 	else {
-		digitalWrite(LIGHT, HIGH);
+		digitalWrite(LIGHTPIN, HIGH);
+		client.print("{ \"result\" : \"success light high\" }");
 	}
-	client.print("{ \"result\" : \"success\" }");
 }
 
 void clientSendJSON(){

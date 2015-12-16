@@ -2,7 +2,7 @@
 
 #USAGE:
 # import libs.libArduinoVeggieLight as libArduinoVeggieLight
-# data = libArduinoVeggieLight.turnOn().result
+# data = libArduinoVeggieLight.manageLight(valueCurrentLight).result
 
 import json
 import urllib2

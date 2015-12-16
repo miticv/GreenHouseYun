@@ -30,6 +30,14 @@ function main() {
 	        	$value = get_InfoSensor($_GET["from"], $_GET["to"], $_GET["freq"], true);
 	        	break;
 
+	    	case "light_on":
+	    		$value = do_light("on");
+	    		break;
+
+	    	case "light_off":
+	    		$value = do_light("off");
+	    		break;
+
 	  	 	case "get_uptime":
 	        	$value = get_Uptime();
 	    		break;
@@ -71,6 +79,15 @@ function main() {
 	print $value;
 	print '}';
 	exit(0);
+}
+
+function do_light($onoff){
+
+	$execStr = 'python /mnt/sda1/arduino/python/apiSetLight.py "' . $onoff . '"';
+	  if($debug) { header('Debug-value: ' . $execStr); }
+
+	  exec(trim($execStr), $result);  
+	  return $result[0];
 }
 
 function get_InfoLog($from, $to){

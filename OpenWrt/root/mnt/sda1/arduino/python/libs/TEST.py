@@ -15,6 +15,9 @@ import libStatLogger
 import libSensorLogger
 import libDbSetting
 import libArduinoVeggieLight
+import libArduinoLight
+
+import urllib2
 
 class testing:
 
@@ -43,6 +46,10 @@ class testing:
 		for temps in arduinoData["Temperatures"]:
 			if(temps["TempC"] < -100):
 				error = "ERR: temperature not reading"
+
+		valueCurrentLight = int(arduinoData["Light"]["Light"])
+		if(valueCurrentLight < 0 or valueCurrentLight > 1000):
+			error = "ERR: cannot read light sensor!"
 
 		self.showResult(error)	
 
@@ -144,6 +151,21 @@ class testing:
 			error = "wrong calculation of light low"	
 		self.showResult(error)
 
+	def testlibArduinoLight(self):
+		error = ""
+		lib = libArduinoLight.arduinoLight()
+		lib.turnOn()
+		data = lib.result
+		if(data["result"] <> "success"):
+			error = "could not turn on the light"
+
+		lib.turnOff()
+		data = lib.result
+		if(data["result"] <> "success"):
+			error = "could not turn off the light"
+
+		self.showResult(error)
+
 	def input(self):
 		var = raw_input("") #"Enter any key (q to quit): "
 		if (var == 'q'):
@@ -170,9 +192,11 @@ print "-------- testing libSettings -----------"
 t.testlibSettings()
 print "-------- testing libArduinoVeggieLight -"
 t.testlibArduinoVeggieLight()
+print "-------- testing libArduinoLight -------"
+t.testlibArduinoLight()
 print "----------------------------------------"
 print "Testing completed"
 
-
-
+#myresponse = urllib2.urlopen("http://127.0.0.1:5555/lighton").read()
+#print myresponse
 
