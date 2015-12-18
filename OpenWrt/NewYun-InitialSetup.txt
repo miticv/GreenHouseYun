@@ -61,7 +61,7 @@ e)partitionAndFormatSDCard
 	dd if=/dev/zero of=/dev/sda bs=4096 count=10
 
 // create the first partition (replace 1024 to how many megs you want for data)
-	(echo n; echo p; echo 1; echo; echo + 2048M; echo w) | fdisk /dev/sda
+	(echo n; echo p; echo 1; echo; echo +2048M; echo w) | fdisk /dev/sda
 
 //unmount
 	umount /dev/sda?
