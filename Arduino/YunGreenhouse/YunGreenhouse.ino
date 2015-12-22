@@ -174,6 +174,9 @@ void ReadData(){
 	client.print(", \"DigitalPins\": ");
 	ReadDigitalPins();
 
+	        client.print(", \"NumberOfTemperatures\": ");
+			client.print(numberOfDevices);
+
 //        client.print(", \"Command\": ");
 //        client.print("\"");
 //        client.print(command);
