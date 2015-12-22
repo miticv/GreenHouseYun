@@ -1,7 +1,7 @@
 ﻿#!/bin/sh /etc/rc.common
 # Example script
 
-#Go to System/System and adjust time! it is important for SSL and downloads
+#Go to System/System and adjust time! (click "Sync with browser" button) it is important for SSL and downloads
 
 
  #*********** install pip *********************

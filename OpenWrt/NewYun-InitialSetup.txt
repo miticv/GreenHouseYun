@@ -28,6 +28,10 @@ df -h / /mnt/sda1
 	cd /mnt/sda1
 	wget http://download.linino.org/linino_distro/master/latest/openwrt-ar71xx-generic-linino-yun-16M-250k-squashfs-sysupgrade.bin
 	sysupgrade -v openwrt-ar71xx-generic-linino-yun-16M-250k-squashfs-sysupgrade.bin
+	NOTE:
+	above version is not 100% yun compatible better FTP this file to sd card and install that one:
+	openwrt-ar71xx-generic-yun-16M-squashfs-sysupgrade.bin
+	How to set up ftp? view here https://github.com/miticv/GreenHouseYun/blob/master/OpenWrt/SetUpScript.txt
 
 2ALT) AlTERNATIVE without INO and serial connection:
 a)haltIfSDAlreadyOnOverlay 
@@ -61,7 +65,7 @@ e)partitionAndFormatSDCard
 	dd if=/dev/zero of=/dev/sda bs=4096 count=10
 
 // create the first partition (replace 1024 to how many megs you want for data)
-	(echo n; echo p; echo 1; echo; echo + 2048M; echo w) | fdisk /dev/sda
+	(echo n; echo p; echo 1; echo; echo +2048M; echo w) | fdisk /dev/sda
 
 //unmount
 	umount /dev/sda?
