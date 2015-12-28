@@ -40,6 +40,10 @@ function main() {
 	    		$value = do_light("off");
 	    		break;
 
+	    	case "light":
+	    		$value = do_light_flick();
+	    		break;
+
 	  	 	case "get_uptime":
 	        	$value = get_Uptime();
 	    		break;
@@ -86,6 +90,15 @@ function main() {
 function do_light($onoff){
 
 	$execStr = 'python /mnt/sda1/arduino/python/apiSetLight.py "' . $onoff . '"';
+	  if($debug) { header('Debug-value: ' . $execStr); }
+
+	  exec(trim($execStr), $result);  
+	  return $result[0];
+}
+
+function do_light_flick(){
+
+	$execStr = 'python /mnt/sda1/arduino/python/apiSetLight.py "flick"';
 	  if($debug) { header('Debug-value: ' . $execStr); }
 
 	  exec(trim($execStr), $result);  

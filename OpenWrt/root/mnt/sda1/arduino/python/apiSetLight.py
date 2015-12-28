@@ -3,7 +3,7 @@
 # python /mnt/sda1/arduino/python/apiSetLight.py "on"
 # or:
 # python /mnt/sda1/arduino/python/apiSetLight.py "off"
-# which is same as:
+# or to flick it:
 # python /mnt/sda1/arduino/python/apiSetLight.py
 
 
@@ -15,14 +15,20 @@ data = "{ }"
 
 if(len(sys.argv) > 1):
 	onoff = sys.argv[1]
-else
-	onoff = "off"
+else:
+	onoff = "flick"
 
+
+lib = libArduinoLight.arduinoLight()
 
 if(onoff == "on"):
-	 data = libArduinoLight.turnOn().result
+	 lib.turnOn()
 
-else: # if(onoff == "off"):
-	data = libArduinoLight.turnOff().result
+elif(onoff == "off"):
+	lib.turnOff()
 
-print data
+else:
+	lib.flick()
+
+
+print lib.result

@@ -33,3 +33,12 @@ class arduinoLight:
 			self.result = json.loads(jsonResponse)
 		except:
 			raise ValueError("Error loading JSON from Arduino")
+
+	def flick(self):
+		try:
+			myurl = config.arduino['lighflickUrl']
+			self.myresponse = urllib2.urlopen(myurl).read()
+			jsonResponse = self.myresponse[self.myresponse.index('{') :] #strip headers
+			self.result = json.loads(jsonResponse)
+		except:
+			raise ValueError("Error loading JSON from Arduino")			

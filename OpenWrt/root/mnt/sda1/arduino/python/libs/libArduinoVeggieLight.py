@@ -22,7 +22,7 @@ class arduinoVeggieLight:
 
 	def turnOn(self):
 		try:
-			myurl = config.arduino['lightonUrl']
+			myurl = config.arduino['veggielightonUrl']
 			self.myresponse = urllib2.urlopen(myurl).read()
 			jsonResponse = self.myresponse[self.myresponse.index('{') :] #strip headers
 			self.result = json.loads(jsonResponse)
@@ -31,7 +31,7 @@ class arduinoVeggieLight:
 
 	def turnOff(self):
 		try:
-			myurl = config.arduino['lightoffUrl']
+			myurl = config.arduino['veggielightoffUrl']
 			self.myresponse = urllib2.urlopen(myurl).read()
 			jsonResponse = self.myresponse[self.myresponse.index('{') :] #strip headers
 			self.result = json.loads(jsonResponse)

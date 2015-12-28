@@ -19,8 +19,10 @@ arduino = dict(
 	bootUrl = 'http://127.0.0.1:5555/boot',
 	lightonUrl = 'http://127.0.0.1:5555/lighton',
 	lightoffUrl = 'http://127.0.0.1:5555/lightoff',
+	lighflickUrl = 'http://127.0.0.1:5555/lightflick',
 	veggielightonUrl = 'http://127.0.0.1:5555/veggielighton',
 	veggielightoffUrl = 'http://127.0.0.1:5555/veggielightoff'
+
 )
 
 twillio = dict(

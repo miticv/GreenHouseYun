@@ -156,13 +156,24 @@ class testing:
 		lib = libArduinoLight.arduinoLight()
 		lib.turnOn()
 		data = lib.result
-		if(data["result"] <> "success"):
-			error = "could not turn on the light"
+		if(not data["result"].startswith("success")):
+			error = "could not turn on the light:" + data["result"]
 
 		lib.turnOff()
 		data = lib.result
-		if(data["result"] <> "success"):
-			error = "could not turn off the light"
+		if(not data["result"].startswith("success")):
+			error = "could not turn off the light:" + data["result"]
+
+		#flick 2x to put it back to original state
+		lib.flick()
+		data = lib.result
+		if(not data["result"].startswith("success")):
+			error = "could not flick the light:" + data["result"]
+		lib.flick()
+		data = lib.result
+		if(not data["result"].startswith("success")):
+			error = "could not flick the light:" + data["result"]
+
 
 		self.showResult(error)
 
@@ -196,7 +207,3 @@ print "-------- testing libArduinoLight -------"
 t.testlibArduinoLight()
 print "----------------------------------------"
 print "Testing completed"
-
-#myresponse = urllib2.urlopen("http://127.0.0.1:5555/lighton").read()
-#print myresponse
-

@@ -141,11 +141,18 @@ void loop() {
 		VeggieLight(1);
 	}
 	else if (command == "lightoff") {
-		Light(0);
-	}
-	else if (command == "lighton") {
 		Light(1);
 	}
+	else if (command == "lighton") {
+		Light(0);
+	}
+  else if (command == "lightflick") {
+    if(digitalRead(LIGHTPIN) == HIGH){
+        Light(0);
+    }else{
+        Light(1);
+    }
+  }
 	else if (command == "boot") {
 		Reboot();
 	}
