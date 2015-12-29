@@ -113,6 +113,10 @@ opkg install python-mysql
 
 
 #************************************* set up scheduled jobs:
+#first enable corono by runing:
+/etc/init.d/cron start
+/etc/init.d/cron enable
+
 #In web interface go to System/Scheduled Tasks and add:
 
 @reboot /mnt/sd/rhc/startup.sh
