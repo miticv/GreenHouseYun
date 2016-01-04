@@ -1,9 +1,10 @@
 ﻿#!/bin/sh /etc/rc.common
 # Example script
 
+#************************** set time *********
 #Go to System/System and adjust time! (click "Sync with browser" button) it is important for SSL and downloads
-
-
+date -s"2016-01-04 12:09:00"
+ 
  #*********** install pip *********************
 opkg update
 //if Signature check failed.Remove wrong Signature file. then comment #option check_signature from /etc/opkg.conf
