@@ -5,6 +5,18 @@
 #Go to System/System and adjust time! (click "Sync with browser" button) it is important for SSL and downloads
 date -s"2016-01-04 12:09:00"
  
+opkg update
+opkg install ntpd
+#can add this to startup script:
+ntpdate -s 0.openwrt.pool.ntp.org
+
+/etc/init.d/sysntpd disable
+/etc/init.d/sysntpd enable
+/etc/init.d/sysntpd start
+netstat -l | grep ntp
+
+
+ 
  #*********** install pip *********************
 opkg update
 //if Signature check failed.Remove wrong Signature file. then comment #option check_signature from /etc/opkg.conf
